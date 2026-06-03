@@ -327,12 +327,7 @@ function saetRessourcer() {
 }
 
 function opdaterBarer() {
-    if (karakter.livNu < 0) {
-        document.getElementById('livBar').style.width = '0%';
-    } else {
-        const livProcent = (karakter.livNu / karakter.livMax * 100).toFixed(0);
-        document.getElementById('livBar').style.width = livProcent + '%';
-    }
+    opdaterLivBar();
 
     if (karakter.sejdNu < 0) {
         document.getElementById('sejdBar').style.width = '0%';
@@ -346,6 +341,24 @@ function opdaterBarer() {
     } else {
     const huProcent = (karakter.huNu / karakter.huMax * 100).toFixed(0);
     document.getElementById('huBar').style.width = huProcent + '%';
+    }
+}
+
+function opdaterLivBar() {
+    if (karakter.livNu < 0) {
+        document.getElementById('livBar').style.width = '0%';
+    } else {
+
+        const forvitringProcent = (karakter.livMax / karakter.livVital * 100).toFixed(0);
+        document.getElementById('forvitringBar').style.width = forvitringProcent + '%';
+
+
+
+        const livProcent = (karakter.livNu / karakter.livMax * 100).toFixed(0);
+        document.getElementById('livBar').style.width = livProcent + '%';
+
+
+        console.log(forvitringProcent);
     }
 }
 
@@ -588,7 +601,7 @@ function drikFlaske(type) {
 
     if (type === 'liv') {
         if (karakter.livNu === karakter.livMax) {
-            visBesked('Du har fuld Liv.');
+            visBesked('Du har allerede fuld Liv.');
             return;
         }
         const flaskeLiv = Math.ceil(karakter.livMax / 2);
@@ -597,7 +610,7 @@ function drikFlaske(type) {
         opdaterVistData();
     } else if (type === 'sejd') {
         if (karakter.sejdNu === karakter.sejdMax) {
-            visBesked('Du har fuld Sejd.');
+            visBesked('Du har allerede fuld Sejd.');
             return;
         }
         const flaskeSejd = Math.ceil(karakter.sejdMax / 2);

@@ -151,25 +151,23 @@ klik('bekraeft-hvil', hvil);
     klik('annuller-magi', () => lukVindue('magi'));
 
 // Død
-klik('stor-doed-knap', () => aabenVindue('doed-valg'));
-klik('annuller-doed-valg', () => lukVindue('doed-valg'));
+    klik('doed-valg-knap', () => aabenVindue('doed'));
+    klik('annuller-hvil', () => lukVindue('hvil'));
 
-klik('doed-valg-knap', () => aabenVindue('doed'));
-klik('bekraeft-doed', () => {
-    doed();
-    lukVindue('doed');
-    lukVindue('doed-valg');
-});
-klik('annuller-doed', () => lukVindue('doed'));
+    klik('bekraeft-doed', () => {
+        doed();
+        lukVindue('doed');
+        lukVindue('hvil');
+    });
+    klik('annuller-doed', () => lukVindue('doed'));
 
-klik('vitalitet-valg-knap', () => aabenVindue('vitalitet'));
-klik('bekraeft-vitalitet', () => {
-    genskabVitalitet();
-    lukVindue('vitalitet');
-    lukVindue('doed-valg');
-});
-klik('annuller-vitalitet', () => lukVindue('vitalitet'));
-
+    klik('vitalitet-valg-knap', () => aabenVindue('vitalitet'));
+    klik('bekraeft-vitalitet', () => {
+        genskabVitalitet();
+        lukVindue('vitalitet');
+        lukVindue('hvil');
+    });
+    klik('annuller-vitalitet', () => lukVindue('vitalitet'));
 
 
 

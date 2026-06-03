@@ -70,7 +70,6 @@
                             <span class="stat__navn">Vandsten</span>
                             <span class="stat__vaerdi stat__vaerdi--vandsten">✺</span>
                         </div>
-                        <div class="stat stat--doed" id="stor-doed-knap">Død</div>
                     </div>
                 </div>
             </div>
@@ -87,141 +86,166 @@
 
             <div class="sektion__status" id="status-indhold">
 
-                <div class="sektion__indhold">
+                <div class="ressource__grid">
 
-                    <div class="ressource__grid">
+                    <div class="ressource ressource--liv" id="liv-status">
 
-                        <div class="ressource ressource--liv" id="liv-status">
-                            <div class="ressource__hoved">LIV
-                            <div class="ressource__info">Vitalt maks: <span id="livVital">60</span> Liv</div></div>
-                            <div class="ressource__vaerdi">
-                                <span id="livNu">60</span> / <span id="livMax">60</span>
-                            </div>
-                            <div class="bar">
+                        <div class="bar bar--forvitring">
+                            <div class="bar" id="forvitringBar">
                                 <div class="bar__fyld bar__fyld--liv" id="livBar" style="width: 80%;"></div>
-                            </div>
-                            <div class="justering" id="liv-justering">
-                                <input type="number" id="liv-input" placeholder="Liv" min="0">
-                                <div class="justering__knapgruppe">
-                                    <div class="justering__knap" id="liv-justering-minus">-</div>
-                                    <div class="justering__knap" id="liv-justering-plus">+</div>
-                                </div>
                             </div>
                         </div>
                         
-                        <div class="ressource ressource--sejd" id="sejd-status">
-                            <div class="ressource__hoved">SEJD</div>
+
+                        <div class="ressource__indhold">
+                            <div>Liv</div>
+                        
+                        <div class="ressource__vaerdi ressource__vaerdi--liv">
+                            <span id="livNu">60</span> / <span id="livMax">60</span>
+                        </div>
+
+                        <div class="ressource__info">Vital: <span id="livVital">60</span> Liv</div>
+
+                        </div>
+                        
+                        <div class="justering" id="liv-justering">
+                            <input type="number" id="liv-input" placeholder="Liv" min="0">
+                            <div class="justering__knapgruppe">
+                                <div class="justering__knap" id="liv-justering-minus">-</div>
+                                <div class="justering__knap" id="liv-justering-plus">+</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ressource ressource--sejd" id="sejd-status">
+                        <div class="bar">
+                            <div class="bar__fyld bar__fyld--sejd" id="sejdBar" style="width: 100%;"></div>
+                        </div>
+                        <div class="ressource__indhold">
+                            <div>Sejd</div>
+
                             <div class="ressource__vaerdi">
                                 <span id="sejdNu">18</span> / <span id="sejdMax">18</span>
                             </div>
-                            <div class="bar">
-                                <div class="bar__fyld bar__fyld--sejd" id="sejdBar" style="width: 100%;"></div>
-                            </div>
-                            <div class="justering" id="sejd-justering">
-                                <input type="number" id="sejd-input" placeholder="Sejd" min="0">
-                                <div class="justering__knapgruppe">
-                                    <div class="justering__knap" id="sejd-justering-minus">-</div>
-                                    <div class="justering__knap" id="sejd-justering-plus">+</div>
-                                </div>
+                        </div>
+                        
+                        <div class="justering" id="sejd-justering">
+                            <input type="number" id="sejd-input" placeholder="Sejd" min="0">
+                            <div class="justering__knapgruppe">
+                                <div class="justering__knap" id="sejd-justering-minus">-</div>
+                                <div class="justering__knap" id="sejd-justering-plus">+</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="ressource ressource--hu" id="hu-status">
-                            <div class="ressource__hoved">HU
-                            <div class="ressource__info">↺ <span id="huRegen">4</span> Hu/runde</div></div>
+                    <div class="ressource ressource--hu" id="hu-status">
+                        <div class="bar">
+                            <div class="bar__fyld bar__fyld--hu" id="huBar" style="width: 100%;"></div>
+                        </div>
+                        <div class="ressource__indhold">
+                            <div>Hu</div>
+                        
                             <div class="ressource__vaerdi">
                                 <span id="huNu">5</span> / <span id="huMax">5</span>
                             </div>
-                            <div class="bar">
-                                <div class="bar__fyld bar__fyld--hu" id="huBar" style="width: 100%;"></div>
-                            </div>
-                            <div class="justering" id="hu-justering">
+
+                            <div class="ressource__info">↺ <span id="huRegen">4</span> Hu/runde</div>
+
+                        </div>
+                        <div class="justering" id="hu-justering">
+
                                 <div class="justering__knap justering__knap--hu-regen" id="hu-justering-regen">↺</div>
                                 <div class="justering__knapgruppe">
                                     <div class="justering__knap" id="hu-justering-minus">-</div>
                                     <div class="justering__knap" id="hu-justering-plus">+</div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="ressource ressource--flasker" id="flasker">
-                            <div class="ressource__hoved">STENVANDSFLASKER</div>
-                            <div class="ressource__vaerdi"><span id="flaskerNu">3</span> / <span id="flaskerMax">3</span></div>
-                            <div class="flaske-ikoner" id="flaske-ikoner">◉ ◉ ◉ ◉ ○</div>
-
-                            <div class="justering justering--flaske" id="flaske-justering">
-                                <div class="justering__knapgruppe justering__knapgruppe--kolonne">
-                                    <div class="justering__knap justering__knap--lille" id="flaske-liv">Liv</div>
-                                    <div class="justering__knap justering__knap--lille" id="flaske-sejd">Sejd</div>
-                                    <div class="justering__knap justering__knap--lille" id="flaske-laesion">Læsion</div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
 
-                <div class="sektion__indhold">
 
-                    <div class="status__grid">
-                        <div class="stat sekvens" id="sekvens">
-                            <span class="stat__navn">Sekvens</span>
-                            <span class="stat__vaerdi" id="sekvens-vaerdi">0</span>
-                                <div class="justering justering--stat" id="sekvens-justering">
-                                    <div class="u-flex-row">
-                                        <input type="number" id="sekvens-input" placeholder="Sekvenstal" min="0">
-                                        <div class="justering__knapgruppe">
-                                            <div class="justering__knap sekvens" id="sekvens-saet">↖︎</div>
-                                        </div>
+
+
+                <div class="status__grid">
+
+                    <div class="stat flasker" id="flasker">
+                        <span class="stat__navn">Flasker</span>
+                        
+                        <div class="flaske-ikoner" id="flaske-ikoner">◉ ◉ ◉ ◉ ○</div>
+
+                        <div class="justering justering--flaske" id="flaske-justering">
+                            <div class="justering__knapgruppe justering__knapgruppe--kolonne">
+                                <div><span id="flaskerNu">3</span> / <span id="flaskerMax">3</span></div>
+                                <div class="justering__knap justering__knap--lille" id="flaske-liv">Liv</div>
+                                <div class="justering__knap justering__knap--lille" id="flaske-sejd">Sejd</div>
+                                <div class="justering__knap justering__knap--lille" id="flaske-laesion">Læsion</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="stat sekvens" id="sekvens">
+                        <span class="stat__navn">Sekvens</span>
+                        <span class="stat__vaerdi" id="sekvens-vaerdi">0</span>
+                            <div class="justering justering--stat" id="sekvens-justering">
+                                <div class="u-flex-row">
+                                    <input type="number" id="sekvens-input" placeholder="Sekvenstal" min="0">
+                                    <div class="justering__knapgruppe">
+                                        <div class="justering__knap sekvens" id="sekvens-saet">↖︎</div>
                                     </div>
-                                        <div class="evne__pulje sekvens-pulje" id="sekvens-pulje"></div>
                                 </div>
-                        </div>
-
-                        <div class="stat haab" id="haab">
-                            <span class="stat__navn">Håb</span>
-                            <span class="stat__vaerdi" id="haab-vaerdi">0</span>
-                            <div class="justering justering--stat" id="haab-justering">
-                                <div class="justering__knapgruppe justering__knapgruppe--stat">
-                                    <div class="justering__knap haab" id="haab-justering-minus">-</div>
-                                    <div class="justering__knap haab" id="haab-justering-plus">+</div>
-                                </div>
+                                <div class="evne__pulje sekvens-pulje" id="sekvens-pulje"></div>
                             </div>
-                        </div>
+                    </div>
 
-                        <div class="stat forvitring" id="forvitring">
-                            <span class="stat__navn">Forvitring</span>
-                            <span class="stat__vaerdi" id="forvitring-vaerdi">0</span>
-                            <div class="justering justering--stat" id="forvitring-justering">
-                                <div class="justering__knapgruppe justering__knapgruppe--stat">
-                                    <div class="justering__knap forvitring" id="forvitring-justering-minus">-</div>
-                                    <div class="justering__knap forvitring" id="forvitring-justering-plus">+</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stat udmattelse" id="udmattelse">
-                            <span class="stat__navn">Udmattelse</span>
-                            <span class="stat__vaerdi" id="udmattelse-vaerdi">0</span>
-                            <div class="justering justering--stat" id="udmattelse-justering">
-                                <div class="justering__knapgruppe justering__knapgruppe--stat">
-                                    <div class="justering__knap udmattelse" id="udmattelse-justering-minus">-</div>
-                                    <div class="justering__knap udmattelse" id="udmattelse-justering-plus">+</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stat laesioner" id="laesioner">
-                            <span class="stat__navn">Læsioner</span>
-                            <span class="stat__vaerdi" id="laesioner-vaerdi">0</span>
-                            <div class="justering justering--stat" id="laesioner-justering">
-                                <div class="justering__knapgruppe justering__knapgruppe--stat">
-                                    <div class="justering__knap laesioner" id="laesioner-justering-minus">-</div>
-                                    <div class="justering__knap laesioner" id="laesioner-justering-plus">+</div>
-                                </div>
+                    <div class="stat haab" id="haab">
+                        <span class="stat__navn">Håb</span>
+                        <span class="stat__vaerdi" id="haab-vaerdi">0</span>
+                        <div class="justering justering--stat" id="haab-justering">
+                            <div class="justering__knapgruppe justering__knapgruppe--stat">
+                                <div class="justering__knap haab" id="haab-justering-minus">-</div>
+                                <div class="justering__knap haab" id="haab-justering-plus">+</div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="stat forvitring" id="forvitring">
+                        <span class="stat__navn">Forvitring</span>
+                        <span class="stat__vaerdi" id="forvitring-vaerdi">0</span>
+                        <div class="justering justering--stat" id="forvitring-justering">
+                            <div class="justering__knapgruppe justering__knapgruppe--stat">
+                                <div class="justering__knap forvitring" id="forvitring-justering-minus">-</div>
+                                <div class="justering__knap forvitring" id="forvitring-justering-plus">+</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat udmattelse" id="udmattelse">
+                        <span class="stat__navn">Udmattelse</span>
+                        <span class="stat__vaerdi" id="udmattelse-vaerdi">0</span>
+                        <div class="justering justering--stat" id="udmattelse-justering">
+                            <div class="justering__knapgruppe justering__knapgruppe--stat">
+                                <div class="justering__knap udmattelse" id="udmattelse-justering-minus">-</div>
+                                <div class="justering__knap udmattelse" id="udmattelse-justering-plus">+</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat laesioner" id="laesioner">
+                        <span class="stat__navn">Læsioner</span>
+                        <span class="stat__vaerdi" id="laesioner-vaerdi">0</span>
+                        <div class="justering justering--stat" id="laesioner-justering">
+                            <div class="justering__knapgruppe justering__knapgruppe--stat">
+                                <div class="justering__knap laesioner" id="laesioner-justering-minus">-</div>
+                                <div class="justering__knap laesioner" id="laesioner-justering-plus">+</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
         </div>
 
@@ -491,6 +515,9 @@
                 <div class="vindue__knap" id="evneforbedringsknap">Evneforbedring</div>
                 <div class="vindue__knap" id="faerdighedsknap">Færdigheder</div>
                 <div class="vindue__knap" id="besvaergelsesknap">Besværgelser</div>
+                <div class="vindue__knap" id="doed-valg-knap">Dø og genopstå</div>
+                <div class="vindue__knap" id="vitalitet-valg-knap">Genskab vitalitet</div>
+                <div class="vindue__knap vindue__knap--annuller" id="annuller-hvil">Annuller</div>
             </div>
         </div>
     </div>
@@ -600,9 +627,7 @@
         <div class="vindue__blok">
             <div class="vindue__titel">Død og forvitring</div>
             <div class="vindue__knapgruppe vindue__knapgruppe--lodret">
-                <div class="vindue__knap" id="doed-valg-knap">Dø og genopstå</div>
-                <div class="vindue__knap" id="vitalitet-valg-knap">Genskab vitalitet</div>
-                <div class="vindue__knap vindue__knap--annuller" id="annuller-doed-valg">Annuller</div>
+                
             </div>
         </div>
     </div>
