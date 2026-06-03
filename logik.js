@@ -200,20 +200,10 @@ function visJustering(type) {
     justering.classList.toggle('justering--aktiv');
 }
 
-function visRessourceJusteringer() {
-    if (erEndeligDoed()) return;
-
-    const justeringer = document.querySelectorAll('.ressource .justering');
-    const alleAktive = Array.from(justeringer).every(el => el.classList.contains('justering--aktiv'));
-    justeringer.forEach(el => {
-        el.classList.toggle('justering--aktiv', !alleAktive);
-    });
-}
-
 function visStatusJusteringer() {
     if (erEndeligDoed()) return;
-    
-    const justeringer = document.querySelectorAll('.justering--stat');
+
+    const justeringer = document.querySelectorAll('.sektion__status .justering');
     const alleAktive = Array.from(justeringer).every(el => el.classList.contains('justering--aktiv'));
     justeringer.forEach(el => {
         el.classList.toggle('justering--aktiv', !alleAktive);
@@ -607,7 +597,6 @@ function drikFlaske(type) {
         const flaskeLiv = Math.ceil(karakter.livMax / 2);
         karakter.livNu = Math.min(karakter.livMax, flaskeLiv + karakter.livNu);
         karakter.flaskerNu -= 1;
-        opdaterVistData();
     } else if (type === 'sejd') {
         if (karakter.sejdNu === karakter.sejdMax) {
             visBesked('Du har allerede fuld Sejd.');
@@ -619,7 +608,6 @@ function drikFlaske(type) {
         }
         karakter.sejdNu = Math.min(karakter.sejdMax, flaskeSejd + karakter.sejdNu);
         karakter.flaskerNu -= 1;
-        opdaterVistData();
     } else if (type === 'laesion') {
         if (karakter.laesioner <= 0) {
             visBesked('Du har ingen læsioner.');
@@ -627,8 +615,11 @@ function drikFlaske(type) {
         }
         karakter.laesioner -= 1;
         karakter.flaskerNu -= 1;
-        opdaterVistData();
     }
+
+    karakter.huNu -= 1;
+
+    opdaterVistData();
 }
 
 

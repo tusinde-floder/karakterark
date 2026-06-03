@@ -72,10 +72,7 @@ klik('annuller-nulstil', () => {
 });
 
 // Status
-klik('status-toggle', () => {
-    visRessourceJusteringer();
-    visStatusJusteringer();
-});
+klik('status-toggle', visStatusJusteringer);
 
 klik('liv-status', () => visJustering('liv'));
 klik('liv-justering-minus', livSkade);
