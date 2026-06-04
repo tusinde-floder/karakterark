@@ -1690,6 +1690,18 @@
             "effekt": {
                 "huRegen": 1
             }
+        },
+        {
+            "id": "u_vedhaeng_form+1",
+            "navn": "Form +1",
+            "beskrivelse": "Forskyder din Form med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "form": 1
+            }
         }
     ]
 }
