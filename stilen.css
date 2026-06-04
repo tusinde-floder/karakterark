@@ -464,7 +464,7 @@ input::-webkit-inner-spin-button {
 }
 
 .bar--forvitring {
-    background: #000;
+    background: #888;
 }
 
 .bar__fyld {
@@ -636,7 +636,7 @@ input::-webkit-inner-spin-button {
 /* Kort til våben, færdigheder, magi */
 .kort__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 0.5rem;
 }
 
@@ -796,6 +796,7 @@ input::-webkit-inner-spin-button {
     text-transform: uppercase;
     border-radius: 1rem;
     margin-top: 1rem;
+    padding-left: 0.5rem;
 }
 
 .faerdighed-beholder-vindue {
@@ -1498,7 +1499,7 @@ input::-webkit-inner-spin-button {
 
     .kort__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 0.5rem;
 }
 }
@@ -1513,7 +1514,7 @@ input::-webkit-inner-spin-button {
 
     .kort__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     }
 
@@ -1568,12 +1569,6 @@ input::-webkit-inner-spin-button {
     .faerdighed-beholder-vindue {
     grid-template-columns: 1fr 1fr;
     }
-
-    .kort__grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-}
 }
 
 @media (max-width: 450px) {
@@ -1596,17 +1591,15 @@ input::-webkit-inner-spin-button {
     .evne__grid {
         grid-template-columns: 1fr;
     }
+
+    .kort__grid {
+    grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 400px) {
     body {
         padding: 0 0 4rem 0;
-    }
-
-    .kort__grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
     }
 
 }

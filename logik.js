@@ -49,10 +49,7 @@ let karakter = {
     valgteVaaben: [],
 
     udstyr: [],
-    aktivtUdstyr: [],
-    valgtRustning: null,
-    valgtHjelm: null,
-    valgtVedhaeng: [],
+    valgtUdstyr: [],
 
     besvaergelser: [],
     valgteBesvaergelser: [],
@@ -85,7 +82,6 @@ function opdaterVistData() {
     opdaterBeredskab();
     gemData();
     opdaterDoedVisning();
-    opdaterUdstyrKort();
 }
 
 function opdaterEffektiveEvner() {
@@ -117,7 +113,7 @@ function opdaterRessourcer() {
 
 function opdaterStatus() {
     document.getElementById('sekvens-vaerdi').textContent = karakter.sekvens;
-    document.getElementById('sekvens-pulje').textContent = getSekvensPulje();
+    document.getElementById('sekvens-pulje').textContent = beregnSekvensPulje();
     document.getElementById('haab-vaerdi').textContent = karakter.haab;
     document.getElementById('forvitring-vaerdi').textContent = karakter.forvitring;
     document.getElementById('udmattelse-vaerdi').textContent = karakter.udmattelse;
@@ -147,6 +143,7 @@ function opdaterBeredskab() {
     opdaterVaabenKort();
     opdaterFaerdighedKortBrug();
     opdaterMagiKortBrug();
+    opdaterUdstyrKortBeredskab();
 }
 
 function opdaterDoedVisning() {
@@ -279,7 +276,7 @@ function beregnUdstyrEffekter() {
 
 // Ressourcer
 function beregnRessourcer() {
-    const vitalMax = getVitalMax(effektiveEvner.form);
+    const vitalMax = beregnVitalMax(effektiveEvner.form);
     karakter.livVital = vitalMax;
     karakter.livMax = karakter.livVital - (karakter.forvitring * Math.ceil(karakter.livVital / 20));
     if (karakter.livNu > karakter.livMax) karakter.livNu = karakter.livMax;
@@ -290,12 +287,12 @@ function beregnRessourcer() {
         karakter.endeligtDoed = true;
     }
 
-    const sejdMax = getSejdMax(effektiveEvner.sind);
+    const sejdMax = beregnSejdMax(effektiveEvner.sind);
     karakter.sejdMax = Math.max(0, sejdMax);
     if (karakter.sejdNu > karakter.sejdMax) karakter.sejdNu = karakter.sejdMax;
 
-    const huMax = Math.max(1, getHuMax(effektiveEvner.intuition) - karakter.laesioner);
-    const huRegen = Math.max(0, getHuRegen(effektiveEvner.intuition) - karakter.udmattelse);
+    const huMax = Math.max(1, beregnHuMax(effektiveEvner.intuition) - karakter.laesioner);
+    const huRegen = Math.max(0, beregnHuRegen(effektiveEvner.intuition) - karakter.udmattelse);
     karakter.huMax = huMax;
     karakter.huRegen = huRegen;
     if (karakter.huNu > karakter.huMax) karakter.huNu = karakter.huMax;
@@ -307,8 +304,8 @@ function saetRessourcer() {
     document.getElementById('livNu').textContent = karakter.livNu;
     document.getElementById('sejdMax').textContent = karakter.sejdMax;
     document.getElementById('sejdNu').textContent = karakter.sejdNu;
-    document.getElementById('huMax').classList.toggle('reduceret', karakter.huMax < getHuMax(karakter.intuition));
-    document.getElementById('huRegen').classList.toggle('reduceret', karakter.huRegen < getHuRegen(effektiveEvner.intuition));
+    document.getElementById('huMax').classList.toggle('reduceret', karakter.huMax < beregnHuMax(karakter.intuition));
+    document.getElementById('huRegen').classList.toggle('reduceret', karakter.huRegen < beregnHuRegen(effektiveEvner.intuition));
     document.getElementById('huMax').textContent = karakter.huMax;
     document.getElementById('huRegen').textContent = karakter.huRegen;
     document.getElementById('huNu').textContent = karakter.huNu;
@@ -318,20 +315,8 @@ function saetRessourcer() {
 
 function opdaterBarer() {
     opdaterLivBar();
-
-    if (karakter.sejdNu < 0) {
-        document.getElementById('sejdBar').style.width = '0%';
-    } else {
-    const sejdProcent = (karakter.sejdNu / karakter.sejdMax * 100).toFixed(0);
-    document.getElementById('sejdBar').style.width = sejdProcent + '%';
-    }
-
-    if (karakter.huNu < 0) {
-        document.getElementById('huBar').style.width = '0%';
-    } else {
-    const huProcent = (karakter.huNu / karakter.huMax * 100).toFixed(0);
-    document.getElementById('huBar').style.width = huProcent + '%';
-    }
+    opdaterSejdBar();
+    opdaterHuBar();
 }
 
 function opdaterLivBar() {
@@ -342,13 +327,27 @@ function opdaterLivBar() {
         const forvitringProcent = (karakter.livMax / karakter.livVital * 100).toFixed(0);
         document.getElementById('forvitringBar').style.width = forvitringProcent + '%';
 
-
-
         const livProcent = (karakter.livNu / karakter.livMax * 100).toFixed(0);
         document.getElementById('livBar').style.width = livProcent + '%';
 
+    }
+}
 
-        console.log(forvitringProcent);
+function opdaterSejdBar() {
+    if (karakter.sejdNu < 0) {
+        document.getElementById('sejdBar').style.width = '0%';
+    } else {
+    const sejdProcent = (karakter.sejdNu / karakter.sejdMax * 100).toFixed(0);
+    document.getElementById('sejdBar').style.width = sejdProcent + '%';
+    }
+}
+
+function opdaterHuBar() {
+    if (karakter.huNu < 0) {
+        document.getElementById('huBar').style.width = '0%';
+    } else {
+    const huProcent = (karakter.huNu / karakter.huMax * 100).toFixed(0);
+    document.getElementById('huBar').style.width = huProcent + '%';
     }
 }
 
@@ -362,7 +361,7 @@ function opdaterFlaskeIkoner() {
 // Evner
 function opdaterEvne(evne, level) {
     document.getElementById(evne + '-level').textContent = karakter[evne];
-    const pulje = getPulje(level);
+    const pulje = beregnPulje(level);
     document.getElementById(evne + '-pulje').textContent = pulje + 'd6';
 
 
@@ -397,7 +396,7 @@ function erEndeligDoed() {
 }
 
 // Udregn pulje
-function getPulje(level) {
+function beregnPulje(level) {
     if (level <= 6) return 1;
     if (level <= 12) return 2;
     if (level <= 20) return 3;
@@ -411,7 +410,7 @@ function getPulje(level) {
 }
 
 // Liv, Sejd, Hu
-function getVitalMax(form) {
+function beregnVitalMax(form) {
     if (form <= 20) return form * 5;
     if (form <= 40) return 100 + (form - 20) * 4;
     if (form <= 60) return 180 + (form - 40) * 3;
@@ -420,11 +419,11 @@ function getVitalMax(form) {
     return 300 + (form - 100);
 }
 
-function getSejdMax(sind) {
+function beregnSejdMax(sind) {
     return sind;
 }
 
-function getHuMax(intuition) {
+function beregnHuMax(intuition) {
     if (intuition <= 9) return 5;
     if (intuition <= 29) return 6;
     if (intuition <= 49) return 7;
@@ -433,16 +432,16 @@ function getHuMax(intuition) {
     return 10;
 }
 
-function getHuRegen(intuition) {
+function beregnHuRegen(intuition) {
     if (intuition <= 19) return 4;
     if (intuition <= 39) return 5;
     if (intuition <= 69) return 6;
     return 7;
 }
 
-function getSekvensPulje() {
-    const form = getPulje(effektiveEvner.form);
-    const intuition = getPulje(effektiveEvner.intuition);
+function beregnSekvensPulje() {
+    const form = beregnPulje(effektiveEvner.form);
+    const intuition = beregnPulje(effektiveEvner.intuition);
     const pulje = form + intuition + 'd6';
     return pulje;
 }
@@ -656,7 +655,7 @@ function hvil() {
     karakter.laesioner = 0;
     karakter.livNu = karakter.livMax;
     karakter.sejdNu = karakter.sejdMax;
-    karakter.huNu = getHuMax(effektiveEvner.intuition);
+    karakter.huNu = beregnHuMax(effektiveEvner.intuition);
     karakter.flaskerNu = karakter.flaskerMax;
     karakter.brugteFaerdigheder = [];
     opdaterVistData();
@@ -667,7 +666,7 @@ function doed() {
     opdaterEffektiveEvner();
     const haabBesked = karakter.forvitring > 0 ? ' Rul 1d6, få 1 Håb på en træffer.' : '' ;
     karakter.forvitring++;
-    const vitalMax = getVitalMax(effektiveEvner.form);
+    const vitalMax = beregnVitalMax(effektiveEvner.form);
     const nyLivMax = vitalMax - (karakter.forvitring * Math.ceil(vitalMax * 0.05));
     karakter.livNu = Math.max(0, nyLivMax);
     
@@ -758,9 +757,9 @@ function tilfoejUdstyr() {
         return;
     }
 
-    karakter.udstyr.push({...udstyr});
+    karakter.udstyr.push(udstyr.id);
     gemData();
-    // genererVaabenliste(); funktion der opdaterer visning
+    opdaterUdstyrKortVaelger();
     visBesked(`Du har fået ${udstyr.navn}.`);
     input.value = '';
 }
@@ -906,8 +905,25 @@ function beregnBasisskade(vaaben) {
 
 
 // Udstyr
-function opretUdstyrKort(udstyr) {
-    const id = udstyr.id;
+function opdaterUdstyrKortBeredskab() {
+    document.getElementById('udstyr-beholder').innerHTML = '';
+    altUdstyr
+        .filter(u => karakter.valgtUdstyr.includes(u.id))
+        .forEach(udstyr => udstyrKort(udstyr, 'udstyr-beholder'));
+}
+
+function opdaterUdstyrKortVaelger() {
+
+    const raekkefoelge = ['hoved', 'vedhaeng', 'krop'].forEach(plads => {
+        document.getElementById('kendt-udstyr-' + plads).innerHTML = '';
+        altUdstyr
+            .filter(u => u.plads.includes(plads))
+            .forEach(udstyr => udstyrKort(udstyr, 'kendt-udstyr-' + plads));
+    });
+}
+
+function opretUdstyrKort(udstyr, beholder) {
+    const id = beholder + udstyr.id;
     const kort = document.createElement('div');
     kort.className = 'kort';
     kort.id = id + '-kort';
@@ -932,11 +948,12 @@ function opretUdstyrKort(udstyr) {
     return kort;
 }
 
-function udstyrKort(udstyr) {
-    const kort = opretUdstyrKort(udstyr);
-    document.getElementById('udstyr-beholder').appendChild(kort);
-    const kravBeholder = document.getElementById(`info-krav-${udstyr.id}`);
-    const effektBeholder = document.getElementById(`info-effekt-${udstyr.id}`);
+function udstyrKort(udstyr, beholder) {
+    const kort = opretUdstyrKort(udstyr, beholder);
+    document.getElementById(beholder).appendChild(kort);
+    const id = beholder + udstyr.id;
+    const kravBeholder = document.getElementById(`info-krav-${id}`);
+    const effektBeholder = document.getElementById(`info-effekt-${id}`);
 
     if (udstyr.levelKrav) {
         const krav = Object.entries(udstyr.levelKrav)
@@ -950,24 +967,29 @@ function udstyrKort(udstyr) {
     }
 
     if (udstyr.percyklus) {
-        const knap = document.createElement('div');
-        const id = udstyr.id;
-        knap.className = 'brug-knap';
-        knap.id = `cyklus-brug-${id}`;
-        knap.textContent = 'Brug';
-        effektBeholder.appendChild(knap);
+        if (beholder !== 'udstyr-beholder') {
+            const percyklusTekst = document.createElement('div');
+            percyklusTekst.textContent = 'per cyklus';
+            effektBeholder.appendChild(percyklusTekst);
+        } else {
+            const knap = document.createElement('div');
+            knap.className = 'brug-knap';
+            knap.id = `cyklus-brug-${id}`;
+            knap.textContent = 'Brug';
+            effektBeholder.appendChild(knap);
 
-        saetBrugtVisningUdstyr(id, karakter.brugteFaerdigheder.includes(id));
-        knap.addEventListener('click', () => {
-            const brugt = karakter.brugteFaerdigheder.includes(id);
-            if (brugt) {
-                karakter.brugteFaerdigheder = karakter.brugteFaerdigheder.filter(f => f !== id);
-            } else {
-                karakter.brugteFaerdigheder.push(id);
-            }
-            saetBrugtVisningUdstyr(id, !brugt);
-            gemData();
-        });
+            saetBrugtVisningUdstyr(id, karakter.brugteFaerdigheder.includes(id));
+            knap.addEventListener('click', () => {
+                const brugt = karakter.brugteFaerdigheder.includes(id);
+                if (brugt) {
+                    karakter.brugteFaerdigheder = karakter.brugteFaerdigheder.filter(f => f !== id);
+                } else {
+                    karakter.brugteFaerdigheder.push(id);
+                }
+                saetBrugtVisningUdstyr(id, !brugt);
+                gemData();
+            });
+        }
     }
 
     if (udstyr.forskydning) {
@@ -1016,9 +1038,36 @@ function saetBrugtVisningUdstyr(id, brugt) {
     document.getElementById(`cyklus-brug-${id}`).textContent = brugt ? 'Brugt' : 'Brug';
 }
 
-function opdaterUdstyrKort() {
-    document.getElementById('udstyr-beholder').innerHTML = '';
-    altUdstyr.forEach(udstyr => udstyrKort(udstyr));
+function vaelgUdstyr(id) {
+    const udstyr = altUdstyr.find(u => u.id.includes(id));
+    const erValgt = karakter.valgtUdstyr.includes(udstyr.id);
+
+    // TILFØJ VISUEL FEEDBACK
+
+    if (erValgt) {
+        karakter.valgtUdstyr = karakter.valgtUdstyr.filter(u => u !== udstyr.id);
+    } else {
+        const konflikt = karakter.valgtUdstyr.some(valgId => {
+            const valgUdstyr = altUdstyr.find(u => u.id === valgId);
+            return valgUdstyr.plads === udstyr.plads;
+        });
+
+        if (konflikt) {
+            const beskeder = {
+                'hoved': 'Du har allerede udstyr på hovedet.',
+                'vedhaeng': 'Du har allerede et vedhæng.',
+                'krop': 'Du har allerede udstyr på kroppen.'
+            };
+            visBesked(beskeder[udstyr.plads]);
+            return;
+        }
+
+        karakter.valgtUdstyr.push(udstyr.id);
+
+        gemData();
+        opdaterUdstyrKortVaelger();
+        opdaterVistData();
+    }
 }
 
 
@@ -1532,8 +1581,8 @@ function opdaterEvneInfo(evne) {
     const nuvaerendeLvl = evneVindueData.evner[evne];
     const antalForbedringer = evneForbedringer[evne];
     const nytLevel = nuvaerendeLvl + antalForbedringer;
-    const nuvaerendePulje = getPulje(nuvaerendeLvl);
-    const nyPulje = getPulje(nytLevel);
+    const nuvaerendePulje = beregnPulje(nuvaerendeLvl);
+    const nyPulje = beregnPulje(nytLevel);
 
     let info = '';
     if (antalForbedringer > 0) {
@@ -1622,8 +1671,8 @@ function bekraeftEvneForbedringer() {
 
 // Specialinfo-hjælpere til Liv, Sejd, Hu
 function evneLivInfo(gammelForm, nyForm) {
-    const gammelLiv = getVitalMax(gammelForm);
-    const nytLiv = getVitalMax(nyForm);
+    const gammelLiv = beregnVitalMax(gammelForm);
+    const nytLiv = beregnVitalMax(nyForm);
     const forskel = nytLiv - gammelLiv;
     return forskel > 0
         ? `Liv ${gammelLiv} → <span class="ny-vaerdi">${nytLiv}</span> (+${forskel})`
@@ -1638,10 +1687,10 @@ function evneSejdInfo(gammelSind, nySind) {
 }
 
 function evneHuInfo(gammelIntuition, nyIntuition) {
-    const gammelHu = getHuMax(gammelIntuition);
-    const nyHu = getHuMax(nyIntuition);
-    const gammelRegen = getHuRegen(gammelIntuition);
-    const nyRegen = getHuRegen(nyIntuition);
+    const gammelHu = beregnHuMax(gammelIntuition);
+    const nyHu = beregnHuMax(nyIntuition);
+    const gammelRegen = beregnHuRegen(gammelIntuition);
+    const nyRegen = beregnHuRegen(nyIntuition);
  
     const dele = [];
     if (gammelHu !== nyHu) dele.push(`Hu ${gammelHu} → <span class="ny-vaerdi">${nyHu}</span>`);
@@ -2010,9 +2059,7 @@ const karakterGrundlag = {
     valgteVaaben: [],
 
     udstyr: [],
-    valgtRustning: [],
-    valgtHjelm: [],
-    valgtVedhaeng: [],
+    valgtUdstyr: [],
 
     besvaergelser: [],
     valgteBesvaergelser: [],

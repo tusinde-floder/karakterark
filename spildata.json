@@ -1538,7 +1538,7 @@
             "beskrivelse": "Udstyrsbeskrivelse",
 
             "type": "Type",
-            "plads": "haand/hoved/krop/vedhaeng",
+            "plads": "plads",
             "levelKrav": {},
 
             "rustningsgrad": 0,

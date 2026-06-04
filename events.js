@@ -168,9 +168,15 @@ klik('bekraeft-hvil', hvil);
 
 
 
-// Våben
+// Våben og udstyr
 klik('vaaben-liste-knap', genererVaabenliste);
 klik('tilfoej-vaaben-knap', tilfoejVaaben);
+klik('udstyr-vaelger-knap', () => {
+    aabenVindue('udstyr');
+    opdaterUdstyrKortVaelger();
+});
+klik('tilfoej-udstyr-knap', tilfoejUdstyr);
+klik('annuller-udstyr', () => lukVindue('udstyr'));
 
 // Evner
 klik('evne-toggle', visEvneJusteringer);
@@ -244,6 +250,7 @@ document.getElementById('draaber-input').addEventListener('keydown', (e) => {if 
 document.getElementById('sekvens-input').addEventListener('keydown', (e) => {if (e.key === 'Enter') saetSekvens();});
 document.getElementById('tilfoej-magi-input').addEventListener('keydown', (e) => {if (e.key === 'Enter') tilfoejMagi();});
 document.getElementById('tilfoej-vaaben-input').addEventListener('keydown', (e) => {if (e.key === 'Enter') tilfoejVaaben();});
+document.getElementById('tilfoej-udstyr-input').addEventListener('keydown', (e) =>{if (e.key === 'Enter') tilfoejUdstyr();})
 
 
 // Luk vinduer
