@@ -1694,13 +1694,85 @@
         {
             "id": "u_vedhaeng_form+1",
             "navn": "Form +1",
-            "beskrivelse": "Forskyder din Form med +1.",
+            "beskrivelse": "Forskyder dit Form-level med +1.",
 
             "type": "Vedhæng",
             "plads": "vedhaeng",
 
             "forskydning": {
                 "form": 1
+            }
+        },
+        {
+            "id": "u_vedhaeng_sind+1",
+            "navn": "Sind +1",
+            "beskrivelse": "Forskyder dit Sind-level med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "sind": 1
+            }
+        },
+        {
+            "id": "u_vedhaeng_intuition+1",
+            "navn": "Intuition +1",
+            "beskrivelse": "Forskyder dit Intuition-level med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "intuition": 1
+            }
+        },
+        {
+            "id": "u_vedhaeng_styrke+1",
+            "navn": "Styrke +1",
+            "beskrivelse": "Forskyder dit Styrke-level med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "styrke": 1
+            }
+        },
+        {
+            "id": "u_vedhaeng_behaendighed+1",
+            "navn": "Behændighed +1",
+            "beskrivelse": "Forskyder dit Behændighed-level med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "behaendighed": 1
+            }
+        },
+        {
+            "id": "u_vedhaeng_visdom+1",
+            "navn": "Visdom +1",
+            "beskrivelse": "Forskyder dit Visdom-level med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "visdom": 1
+            }
+        },
+        {
+            "id": "u_vedhaeng_mystik+1",
+            "navn": "Mystik +1",
+            "beskrivelse": "Forskyder dit Mystik-level med +1.",
+
+            "type": "Vedhæng",
+            "plads": "vedhaeng",
+
+            "forskydning": {
+                "mystik": 1
             }
         }
     ]
