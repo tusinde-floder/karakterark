@@ -441,8 +441,8 @@ input::-webkit-inner-spin-button {
 }
 
 .ressource__info {
-    font-size: 0.8em;
-    margin-left: auto;
+    font-size: 0.7rem;
+    margin: 0 auto 0 0.5rem;
 }
 
 .ressource__vaerdi {
@@ -485,6 +485,36 @@ input::-webkit-inner-spin-button {
 
 .reduceret {
     color: var(--tekst-pris);
+}
+
+.skadevaelger {
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    width: fit-content;
+    height: fit-content;
+    background-color: var(--felt);
+    padding: 0.1rem 0.1rem;
+    border-radius: 1rem;
+}
+
+.skadevaelger__valg {
+    padding: 0.1rem 0.5rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    color: var(--tekst-svag);
+}
+
+.skadevaelger__valg--aktiv {
+    background-color: var(--ark);
+    border: 0.5px solid var(--tekst-svag);
+    color: var(--tekst-haard);
+}
+
+.skadevaelger__valg:hover {
+    background-color: var(--hover);
+    color: var(--tekst-mellem-svag)
 }
 
 /* SEKTION: STATUS */
@@ -962,7 +992,7 @@ input::-webkit-inner-spin-button {
 /* =================== */
 .justering {
     display: none;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     background-color: var(--sektion);
     border-radius: 0.5rem;
@@ -1052,6 +1082,7 @@ input::-webkit-inner-spin-button {
     font-size: 0.7rem;
     gap: 0.5rem;
     padding: 0.5rem 0.85rem;
+    text-align: center;
 }
 
 .justering__knapgruppe--evne-forskydning {
@@ -1069,6 +1100,7 @@ input::-webkit-inner-spin-button {
 
 .justering .u-flex-row {
     width: 100%;
+    justify-content: space-between;
 }
 
 
@@ -1543,10 +1575,6 @@ input::-webkit-inner-spin-button {
 
     .evne__grid {
         grid-template-columns: 1fr 1fr;
-    }
-
-    .justering--evne-forskydning {
-        flex-direction: row;
     }
 
     .besked-beholder {

@@ -300,11 +300,12 @@ function beregnRessourcer() {
 
 function saetRessourcer() {
     document.getElementById('livVital').textContent = karakter.livVital;
+    document.getElementById('rustningsgrad').textContent = hentRustningsgrad();
     document.getElementById('livMax').textContent = karakter.livMax;
     document.getElementById('livNu').textContent = karakter.livNu;
     document.getElementById('sejdMax').textContent = karakter.sejdMax;
     document.getElementById('sejdNu').textContent = karakter.sejdNu;
-    document.getElementById('huMax').classList.toggle('reduceret', karakter.huMax < beregnHuMax(karakter.intuition));
+    document.getElementById('huMax').classList.toggle('reduceret', karakter.huMax < beregnHuMax(effektiveEvner.intuition));
     document.getElementById('huRegen').classList.toggle('reduceret', karakter.huRegen < beregnHuRegen(effektiveEvner.intuition));
     document.getElementById('huMax').textContent = karakter.huMax;
     document.getElementById('huRegen').textContent = karakter.huRegen;
@@ -490,8 +491,61 @@ function samlDraaber() {
 }
 
 // Liv
+let fysiskskade = true;
+
+function saetSkadetype(type) {
+    const fysiskknap = document.getElementById('skadevalg-fysisk');
+    const mentalknap = document.getElementById('skadevalg-mental');
+
+    if (type === 'fysisk') {
+        fysiskskade = true;
+        fysiskknap.classList.add('skadevaelger__valg--aktiv');
+        mentalknap.classList.remove('skadevaelger__valg--aktiv');
+    } else if (type === 'mental') {
+        fysiskskade = false;
+        fysiskknap.classList.remove('skadevaelger__valg--aktiv');
+        mentalknap.classList.add('skadevaelger__valg--aktiv');
+    }
+}
+
 function livSkade() {
+    if (fysiskskade === true) {
+        livFysiskSkade();
+    } else if (fysiskskade === false) {
+        livMentalSkade();
+    }
+
+}
+
+function hentRustningsgrad() {
+    let rustningsgrad = 0;
+    karakter.valgtUdstyr.forEach(id => {
+        const udstyr = altUdstyr.find(u => u.id === id);
+        if (!udstyr?.effekt?.rustningsgrad) return;
+        rustningsgrad += udstyr.effekt.rustningsgrad;
+    });
+    return rustningsgrad;
+}
+
+function livFysiskSkade() {
+    const renSkade = parseInt(document.getElementById('liv-input').value) || 0;
+    const rustningsgrad = hentRustningsgrad();
+    const reduceretSkade = Math.max(0, renSkade - rustningsgrad);
+
+    let nyLaesion = false;
+    if (reduceretSkade >= karakter.livMax / 2) {nyLaesion = true};
+    if (nyLaesion) {karakter.laesioner++};
+    karakter.livNu = Math.max(0, karakter.livNu - reduceretSkade);
+    document.getElementById('liv-input').value = '';
+    opdaterVistData();
+    if (nyLaesion) {
+        visBesked('Du har fået en læsion.');
+    };
+}
+
+function livMentalSkade() {
     const skade = parseInt(document.getElementById('liv-input').value) || 0;
+
     let nyLaesion = false;
     if (skade >= karakter.livMax / 2) {nyLaesion = true};
     if (nyLaesion) {karakter.laesioner++};

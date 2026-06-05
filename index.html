@@ -56,10 +56,12 @@
                                     <div class="draaber__efterladt" id="draaber-efterladt-beholder"><span id="draaber-efterladt">22</span> efterladt</div>
                                 </div>
                                 <div class="justering justering--draaber" id="draabe-justering">
-                                    <input type="number" id="draaber-input" placeholder="Dråber" min="0">
-                                    <div class="justering__knapgruppe">
-                                        <div class="justering__knap" id="draabe-justering-minus">-</div>
-                                        <div class="justering__knap" id="draabe-justering-plus">+</div>
+                                    <div class="u-flex-row">
+                                        <input type="number" id="draaber-input" placeholder="Dråber" min="0">
+                                        <div class="justering__knapgruppe">
+                                            <div class="justering__knap" id="draabe-justering-minus">-</div>
+                                            <div class="justering__knap" id="draabe-justering-plus">+</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -99,22 +101,32 @@
 
                         <div class="ressource__indhold">
                             <div>Liv</div>
-                        
-                        <div class="ressource__vaerdi ressource__vaerdi--liv">
-                            <span id="livNu">60</span> / <span id="livMax">60</span>
-                        </div>
-
-                        <div class="ressource__info">Vital: <span id="livVital">60</span> Liv</div>
-
-                        </div>
-                        
-                        <div class="justering" id="liv-justering">
-                            <input type="number" id="liv-input" placeholder="Liv" min="0">
-                            <div class="justering__knapgruppe">
-                                <div class="justering__knap" id="liv-justering-minus">-</div>
-                                <div class="justering__knap" id="liv-justering-plus">+</div>
+                            <div class="ressource__vaerdi ressource__vaerdi--liv">
+                                <span id="livNu">60</span> / <span id="livMax">60</span>
                             </div>
                         </div>
+
+                        <div class="justering" id="liv-justering">
+                            <div class="u-flex-row">
+                                <input type="number" id="liv-input" placeholder="Liv" min="0">
+                                <div class="justering__knapgruppe">
+                                    <div class="justering__knap" id="liv-justering-minus">-</div>
+                                    <div class="justering__knap" id="liv-justering-plus">+</div>
+                                </div>
+                            </div>
+                            <div class="u-flex-row">
+                                <div class="ressource__info">
+                                    <div>Vitalt maksimum: <span id="livVital"></span> Liv</div>
+                                    <div>Rustningsgrad: <span id="rustningsgrad"></span></div>
+                                </div>
+                                <div class="skadevaelger">
+                                    <div class="skadevaelger__valg skadevaelger__valg--aktiv" id="skadevalg-fysisk">Fysisk</div>
+                                    <div class="skadevaelger__valg" id="skadevalg-mental">Mental</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
                     </div>
                     
                     <div class="ressource ressource--sejd" id="sejd-status">
@@ -123,17 +135,18 @@
                         </div>
                         <div class="ressource__indhold">
                             <div>Sejd</div>
-
                             <div class="ressource__vaerdi">
                                 <span id="sejdNu">18</span> / <span id="sejdMax">18</span>
                             </div>
                         </div>
                         
                         <div class="justering" id="sejd-justering">
-                            <input type="number" id="sejd-input" placeholder="Sejd" min="0">
-                            <div class="justering__knapgruppe">
-                                <div class="justering__knap" id="sejd-justering-minus">-</div>
-                                <div class="justering__knap" id="sejd-justering-plus">+</div>
+                            <div class="u-flex-row">
+                                <input type="number" id="sejd-input" placeholder="Sejd" min="0">
+                                <div class="justering__knapgruppe">
+                                    <div class="justering__knap" id="sejd-justering-minus">-</div>
+                                    <div class="justering__knap" id="sejd-justering-plus">+</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -144,23 +157,19 @@
                         </div>
                         <div class="ressource__indhold">
                             <div>Hu</div>
-                        
                             <div class="ressource__vaerdi">
                                 <span id="huNu">5</span> / <span id="huMax">5</span>
                             </div>
-
-                            <div class="ressource__info">↺ <span id="huRegen">4</span> Hu/runde</div>
-
                         </div>
                         <div class="justering" id="hu-justering">
-
+                            <div class="u-flex-row">
                                 <div class="justering__knap justering__knap--hu-regen" id="hu-justering-regen">↺</div>
                                 <div class="justering__knapgruppe">
                                     <div class="justering__knap" id="hu-justering-minus">-</div>
                                     <div class="justering__knap" id="hu-justering-plus">+</div>
                                 </div>
-
-                            
+                            </div>
+                            <div class="ressource__info">↺ <span id="huRegen">4</span> Hu/runde</div>
                         </div>
                     </div>
                 </div>
@@ -319,7 +328,7 @@
                         
                         <div class="evne__pulje" id="form-pulje">2d6</div>
                         <div class="justering justering--evne-forskydning" id="form-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="form-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="form-forskydning-vaerdi"></div>
@@ -336,7 +345,7 @@
                         <span class="evne__level" id="sind-forskudt"></span>
                         <div class="evne__pulje" id="sind-pulje">3d6</div>
                         <div class="justering justering--evne-forskydning" id="sind-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="sind-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="sind-forskydning-vaerdi"></div>
@@ -353,7 +362,7 @@
                         <span class="evne__level" id="intuition-forskudt"></span>
                         <div class="evne__pulje" id="intuition-pulje">2d6</div>
                         <div class="justering justering--evne-forskydning" id="intuition-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="intuition-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="intuition-forskydning-vaerdi"></div>
@@ -370,7 +379,7 @@
                         <span class="evne__level" id="styrke-forskudt"></span>
                         <div class="evne__pulje" id="styrke-pulje">2d6</div>
                         <div class="justering justering--evne-forskydning" id="styrke-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="styrke-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="styrke-forskydning-vaerdi"></div>
@@ -387,7 +396,7 @@
                         <span class="evne__level" id="behaendighed-forskudt"></span>
                         <div class="evne__pulje" id="behaendighed-pulje">3d6</div>
                         <div class="justering justering--evne-forskydning" id="behaendighed-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="behaendighed-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="behaendighed-forskydning-vaerdi"></div>
@@ -404,7 +413,7 @@
                         <span class="evne__level" id="visdom-forskudt"></span>
                         <div class="evne__pulje" id="visdom-pulje">1d6</div>
                         <div class="justering justering--evne-forskydning" id="visdom-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="visdom-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="visdom-forskydning-vaerdi"></div>
@@ -421,7 +430,7 @@
                         <span class="evne__level" id="mystik-forskudt"></span>
                         <div class="evne__pulje" id="mystik-pulje">1d6</div>
                         <div class="justering justering--evne-forskydning" id="mystik-forskydning-justering">
-                            Forskydning
+                            Manuel forskydning
                             <div class="justering__knapgruppe justering__knapgruppe--evne-forskydning">
                                 <div class="justering__knap" id="mystik-forskydning-justering-minus">-</div>
                                 <div class="justering__vaerdi" id="mystik-forskydning-vaerdi"></div>

@@ -78,6 +78,9 @@ klik('liv-status', () => visJustering('liv'));
 klik('liv-justering-minus', livSkade);
 klik('liv-justering-plus', livGenvind);
 
+klik('skadevalg-fysisk', () => saetSkadetype('fysisk'));
+klik('skadevalg-mental', () => saetSkadetype('mental'));
+
 klik('sejd-status', () => visJustering('sejd'));
 klik('sejd-justering-minus', sejdBrug);
 klik('sejd-justering-plus', sejdGenvind);
