@@ -595,6 +595,12 @@ input::-webkit-inner-spin-button {
 }
 
 /* SEKTION: BEREDSKAB */
+.beredskab-info {
+    font-size: 0.65rem;
+    cursor: default;
+    margin-bottom: 0.5rem;
+}
+
 /* Våbenvælger */
 .emne-raekke-beholder {
     background-color: var(--sektion);

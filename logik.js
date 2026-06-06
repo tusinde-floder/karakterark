@@ -543,7 +543,31 @@ function afgoerRustningsStraf() {
             huRegen: -1
         }
     }
+
+    visRustningsStraf(strafniveau);
 }
+
+function visRustningsStraf(strafniveau) {
+    const rustning = altUdstyr.find(u =>
+        karakter.valgtUdstyr.includes(u.id) && u.plads === "krop"
+    );
+    const visning = document.getElementById('vist-rustningsstraf');
+
+    if (strafniveau === 0 || !rustning) {
+        visning.innerHTML = '';
+        return;
+    }
+
+    const straftekst = `${rustning.navn} er for tung til din Styrke og giver dig
+        <br>-1d6 til Behændighedsrul`
+        + (strafniveau > 1 ? ',<br>-1 spænd/Hu i bevægelse' : '')
+        + (strafniveau > 2 ? ',<br>-1 Hu regenerering' : '')
+        + (strafniveau > 3 ? ',<br>-1 maksimalt Hu' : '')
+        + '.';
+
+    visning.innerHTML =  straftekst;
+}
+
 
 
 function beregnUdstyrForskydning() {

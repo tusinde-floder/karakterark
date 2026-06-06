@@ -1621,7 +1621,7 @@
         {
             "id": "u_rustning_granitrustning",
             "navn": "Granitrustning",
-            "beskrivelse": "Store plader af granit, boltet sammen.",
+            "beskrivelse": "Store plader af granit, boltet sammen til en grov rustning.",
 
             "type": "Enorm rustning",
             "plads": "krop",
