@@ -1663,7 +1663,7 @@
                 "sind": 25
             },
             "effekt": {
-                "mentalForsvar": "+1d6"
+                "mentalForsvar": 1
             }
         },
 

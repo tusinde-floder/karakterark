@@ -27,7 +27,9 @@ klik('draaber-efterladt-beholder', samlDraaber);
 // Beredskab
 ['basisskade', 'udstyr', 'cyklus', 'magi'].forEach(fane => {
     klik(`${fane}-titel`, () => {
-        vaelgFane(fane)
+        karakter.arktilstand.aktivfane = fane;
+        gemData();
+        visFane();
     })
 });
 

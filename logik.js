@@ -60,6 +60,11 @@ let karakter = {
     endeligtDoed: false,
 
     noter: "",
+
+    arktilstand: {
+        fysiskskade: true,
+        aktivfane: ''
+    }
 }
 
 let effektiveEvner = {};
@@ -80,6 +85,7 @@ function opdaterVistData() {
     opdaterEvner();
     opdaterInventarOgNoter();
     opdaterBeredskab();
+    opdaterArkTilstand();
     gemData();
     opdaterDoedVisning();
 }
@@ -154,6 +160,11 @@ function opdaterDoedVisning() {
     }
 }
 
+function opdaterArkTilstand() {
+    visSkadetype();
+    visFane();
+}
+
 
 
 // Vis besked
@@ -181,6 +192,12 @@ function toggleSektion(type) {
 
 // Vælg fane
 function vaelgFane(type) {
+    karakter.arktilstand.aktivfane = type;
+    visFane();
+}
+
+function visFane() {
+    const type = karakter.arktilstand.aktivfane;
     document.querySelectorAll('.faneblad--aktiv, .fane__titel--aktiv').forEach(el => {
         el.classList.remove('faneblad--aktiv', 'fane__titel--aktiv');
     });
@@ -261,14 +278,14 @@ function beregnUdstyrForskydning() {
     return resultat;
 }
 
-// Få den her til at virke
+// Få den her til at virke:
 function beregnUdstyrEffekter() {
-    const resultat = { rustningsgrad: 0, huRegen: 0, mentalForsvar: 0 };
+    const resultat = { huRegen: 0, mentalForsvar: 0 };
     karakter.valgtUdstyr.forEach(id => {
         const udstyr = altUdstyr.find(u => u.id === id);
         if (!udstyr?.effekt) return;
-        for (const [evne, værdi] of Object.entries(udstyr.effekt)) {
-            if (evne in resultat) resultat[evne] += værdi;
+        for (const [effekt, værdi] of Object.entries(udstyr.effekt)) {
+            if (effekt in resultat) resultat[effekt] += værdi;
         }
     });
     return resultat;
@@ -491,30 +508,27 @@ function samlDraaber() {
 }
 
 // Liv
-let fysiskskade = true;
-
 function saetSkadetype(type) {
+    if (type === 'fysisk') {
+        karakter.arktilstand.fysiskskade = true;
+    } else if (type === 'mental') {
+        karakter.arktilstand.fysiskskade = false;
+    }
+
+    gemData();
+    visSkadetype();
+}
+
+function visSkadetype() {
     const fysiskknap = document.getElementById('skadevalg-fysisk');
     const mentalknap = document.getElementById('skadevalg-mental');
-
-    if (type === 'fysisk') {
-        fysiskskade = true;
+    if (karakter.arktilstand.fysiskskade) {
         fysiskknap.classList.add('skadevaelger__valg--aktiv');
         mentalknap.classList.remove('skadevaelger__valg--aktiv');
-    } else if (type === 'mental') {
-        fysiskskade = false;
+    } else {
         fysiskknap.classList.remove('skadevaelger__valg--aktiv');
         mentalknap.classList.add('skadevaelger__valg--aktiv');
     }
-}
-
-function livSkade() {
-    if (fysiskskade === true) {
-        livFysiskSkade();
-    } else if (fysiskskade === false) {
-        livMentalSkade();
-    }
-
 }
 
 function hentRustningsgrad() {
@@ -527,34 +541,28 @@ function hentRustningsgrad() {
     return rustningsgrad;
 }
 
-function livFysiskSkade() {
+function livSkade() {
     const renSkade = parseInt(document.getElementById('liv-input').value) || 0;
-    const rustningsgrad = hentRustningsgrad();
-    const reduceretSkade = Math.max(0, renSkade - rustningsgrad);
+    
+    let endeligSkade = renSkade;
+    if (karakter.arktilstand.fysiskskade) {
+        const rustningsgrad = hentRustningsgrad();
+        endeligSkade = Math.max(0, renSkade - rustningsgrad);
+    }
 
-    let nyLaesion = false;
-    if (reduceretSkade >= karakter.livMax / 2) {nyLaesion = true};
-    if (nyLaesion) {karakter.laesioner++};
-    karakter.livNu = Math.max(0, karakter.livNu - reduceretSkade);
+    let nyLaesion = endeligSkade >= (karakter.livMax / 2);
+    if (nyLaesion) {
+        karakter.laesioner++;
+    }
+
+    karakter.livNu = Math.max(0, karakter.livNu - endeligSkade);
+    gemData();
     document.getElementById('liv-input').value = '';
     opdaterVistData();
+
     if (nyLaesion) {
         visBesked('Du har fået en læsion.');
-    };
-}
-
-function livMentalSkade() {
-    const skade = parseInt(document.getElementById('liv-input').value) || 0;
-
-    let nyLaesion = false;
-    if (skade >= karakter.livMax / 2) {nyLaesion = true};
-    if (nyLaesion) {karakter.laesioner++};
-    karakter.livNu = Math.max(0, karakter.livNu - skade);
-    document.getElementById('liv-input').value = '';
-    opdaterVistData();
-    if (nyLaesion) {
-        visBesked('Du har fået en læsion.');
-    };
+    }
 }
 
 function livGenvind() {
