@@ -52,9 +52,15 @@ klik('annuller-karakter', () => {
 );
 
 
-['asket', 'bytyv', 'forkynder', 'hedonist', 'lovloes', 'laerd', 'militarist'].forEach(klasse => {
+['bytyv', 'forkynder', 'hedonist', 'lovloes', 'laerd', 'militarist'].forEach(klasse => {
     klik(`${klasse}-knap`, () => hentStandardKlasse(klasse));
 });
+
+klik('asket-knap', () => {
+    lukVindue('ny-karakter');
+    aabenVindue('levelfordeling');
+    initLevelfordeling('sind');
+})
 
 klik('annuller-ny-karakter', () => {
     lukVindue('ny-karakter');
@@ -282,6 +288,10 @@ document.addEventListener('keydown', (e) => {
 // ===============
 // === DIVERSE ===
 // ===============
+
+// Levelfordeling drag/drop
+document.getElementById('levelfordeling-pulje').addEventListener('dragover', (e) => e.preventDefault());
+document.getElementById('levelfordeling-pulje').addEventListener('drop', dropPaaPulje);
 
 // Håndter textarea-størrelse
 document.getElementById('noter-input').addEventListener('input', (e) => {

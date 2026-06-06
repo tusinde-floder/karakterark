@@ -63,7 +63,7 @@ let karakter = {
 
     arktilstand: {
         fysiskskade: true,
-        aktivfane: 'basisskade'
+        aktivfane: ''
     }
 }
 
@@ -199,6 +199,9 @@ function vaelgFane(type) {
 
 function visFane() {
     const type = karakter.arktilstand.aktivfane;
+
+    if (type === '' || null) return;
+
     document.querySelectorAll('.faneblad--aktiv, .fane__titel--aktiv').forEach(el => {
         el.classList.remove('faneblad--aktiv', 'fane__titel--aktiv');
     });
@@ -2250,6 +2253,191 @@ function bekraeftVaabenopgradering() {
 
 
 
+// Levelfordeling
+let fordelingsTilstand = {
+    pulje: [],
+    tildelt: {},
+    valgt: null,   // { vaerdi, kilde } — kilde er 'pulje' eller en evne-nøgle
+    laastEvne: null
+};
+let dragKilde = null;
+
+function initLevelfordeling(laastEvne) {
+    fordelingsTilstand = {
+        pulje: [15, 12, 10, 8, 5, 4],
+        tildelt: {
+            form: null, sind: null, intuition: null,
+            styrke: null, behaendighed: null, visdom: null, mystik: null
+        },
+        valgt: null,
+        laastEvne: laastEvne
+    };
+    fordelingsTilstand.tildelt[laastEvne] = 18;
+
+    document.getElementById('levelfordeling').style.display = 'block';
+    genererLevelfordelingUI();
+}
+
+function genererLevelfordelingUI() {
+    const evneBeholder = document.getElementById('levelfordeling-evner');
+    const puljeBeholder = document.getElementById('levelfordeling-pulje');
+    evneBeholder.innerHTML = '';
+    puljeBeholder.innerHTML = '';
+
+    for (const evne of evneNoegler) {
+        const erLaast = evne === fordelingsTilstand.laastEvne;
+        const vaerdi = fordelingsTilstand.tildelt[evne];
+
+        const raekke = document.createElement('div');
+        raekke.className = 'levelfordeling__raekke' + (erLaast ? ' levelfordeling__raekke--laast' : '');
+
+        const navn = document.createElement('div');
+        navn.className = 'levelfordeling__evne-navn';
+        navn.textContent = evneVisningsnavn[evne];
+
+        const slot = document.createElement('div');
+        slot.className = 'levelfordeling__slot' + (erLaast ? ' levelfordeling__slot--laast' : '');
+
+        if (vaerdi !== null) slot.appendChild(opretToken(vaerdi, evne));
+
+        if (!erLaast) {
+            slot.addEventListener('click', () => klikPaaSlot(evne));
+            slot.addEventListener('dragover', (e) => e.preventDefault());
+            slot.addEventListener('dragenter', () => slot.classList.add('levelfordeling__slot--over'));
+            slot.addEventListener('dragleave', () => slot.classList.remove('levelfordeling__slot--over'));
+            slot.addEventListener('drop', (e) => {
+                slot.classList.remove('levelfordeling__slot--over');
+                dropPaaSlot(e, evne);
+            });
+        }
+
+        raekke.appendChild(navn);
+        raekke.appendChild(slot);
+        evneBeholder.appendChild(raekke);
+    }
+
+    for (const vaerdi of fordelingsTilstand.pulje) {
+        puljeBeholder.appendChild(opretToken(vaerdi, 'pulje'));
+    }
+}
+
+function opretToken(vaerdi, kilde) {
+    const erLaast = kilde === fordelingsTilstand.laastEvne;
+    const erValgt = fordelingsTilstand.valgt?.vaerdi === vaerdi
+                 && fordelingsTilstand.valgt?.kilde === kilde;
+
+    const el = document.createElement('div');
+    el.className = 'levelfordeling__token';
+    if (erLaast) el.classList.add('levelfordeling__token--laast');
+    if (erValgt) el.classList.add('levelfordeling__token--valgt');
+    el.textContent = vaerdi;
+    el.draggable = !erLaast;
+
+    if (!erLaast) {
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            klikPaaToken(vaerdi, kilde);
+        });
+        el.addEventListener('dragstart', () => {
+            dragKilde = { vaerdi, kilde };
+        });
+        el.addEventListener('dragend', () => {
+            dragKilde = null;
+        });
+    }
+
+    return el;
+}
+
+// Klik-handlers
+function klikPaaToken(vaerdi, kilde) {
+    const valgt = fordelingsTilstand.valgt;
+    if (valgt?.vaerdi === vaerdi && valgt?.kilde === kilde) {
+        fordelingsTilstand.valgt = null;
+    } else {
+        fordelingsTilstand.valgt = { vaerdi, kilde };
+    }
+    genererLevelfordelingUI();
+}
+
+function klikPaaSlot(evne) {
+    const { tildelt, pulje, valgt } = fordelingsTilstand;
+
+    if (valgt === null) {
+        // Intet valgt: returnér slot-værdien til puljen
+        if (tildelt[evne] !== null) {
+            pulje.push(tildelt[evne]);
+            pulje.sort((a, b) => b - a);
+            tildelt[evne] = null;
+        }
+    } else if (valgt.kilde === evne) {
+        // Klik på samme slot som det valgte token: fravælg
+        fordelingsTilstand.valgt = null;
+    } else {
+        const { vaerdi, kilde } = valgt;
+
+        if (kilde === 'pulje') {
+            if (tildelt[evne] !== null) {
+                pulje.push(tildelt[evne]);
+                pulje.sort((a, b) => b - a);
+            }
+            pulje.splice(pulje.indexOf(vaerdi), 1);
+            tildelt[evne] = vaerdi;
+        } else {
+            // Slot til slot: byt
+            tildelt[kilde] = tildelt[evne];
+            tildelt[evne] = vaerdi;
+        }
+
+        fordelingsTilstand.valgt = null;
+    }
+
+    genererLevelfordelingUI();
+}
+
+// Drag-handlers
+function dropPaaSlot(e, evne) {
+    e.preventDefault();
+    if (!dragKilde || evne === fordelingsTilstand.laastEvne) return;
+
+    const { vaerdi, kilde } = dragKilde;
+    const { tildelt, pulje } = fordelingsTilstand;
+
+    if (kilde === 'pulje') {
+        if (tildelt[evne] !== null) {
+            pulje.push(tildelt[evne]);
+            pulje.sort((a, b) => b - a);
+        }
+        pulje.splice(pulje.indexOf(vaerdi), 1);
+        tildelt[evne] = vaerdi;
+    } else if (kilde !== evne) {
+        tildelt[kilde] = tildelt[evne];
+        tildelt[evne] = vaerdi;
+    }
+
+    dragKilde = null;
+    genererLevelfordelingUI();
+}
+
+function dropPaaPulje(e) {
+    e.preventDefault();
+    if (!dragKilde || dragKilde.kilde === 'pulje') return;
+
+    const { vaerdi, kilde } = dragKilde;
+    if (kilde !== fordelingsTilstand.laastEvne) {
+        fordelingsTilstand.tildelt[kilde] = null;
+        fordelingsTilstand.pulje.push(vaerdi);
+        fordelingsTilstand.pulje.sort((a, b) => b - a);
+    }
+
+    dragKilde = null;
+    genererLevelfordelingUI();
+}
+
+
+
+
+
 // ============================================================
 // ====================== DATAHÅNDTERING ======================
 // ============================================================
@@ -2283,7 +2471,7 @@ async function indlaesSpilData() {
 const karakterGrundlag = {
     navn: "",
     klasse: "",
-    draaber: 2280,
+    draaber: 0,
     draaberEfterladt: 0,
 
     livNu: 1,
@@ -2336,7 +2524,7 @@ const karakterGrundlag = {
 
     arktilstand: {
         fysiskskade: true,
-        aktivfane: 'basisskade'
+        aktivfane: ''
     }
 };
 
@@ -2415,5 +2603,4 @@ function hentStandardKlasse(klasse) {
     visArk();
     visBesked(`Karakter nulstillet til ${karakterVisningsnavn[klasse]}`);
     lukVindue('ny-karakter');
-    initEvneVindue();
 }

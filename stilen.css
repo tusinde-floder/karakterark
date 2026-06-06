@@ -1474,6 +1474,97 @@ input::-webkit-inner-spin-button {
 
 
 
+/* Levelfordeling */
+.levelfordeling {
+    font-size: 0.8rem;
+    display: grid;
+    grid-template-columns: 250px 100px;
+    margin: auto;
+    justify-self: center;
+}
+
+.levelfordeling__evner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.levelfordeling__raekke {
+    display: grid;
+    grid-template-columns: 8rem 6rem;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.levelfordeling__evne-navn {
+
+    text-transform: uppercase;
+    color: var(--tekst-svag);
+}
+
+.levelfordeling__raekke--laast .levelfordeling__evne-navn {
+    color: var(--tekst-mellem-haard);
+}
+
+.levelfordeling__slot {
+    min-height: 2rem;
+    width: 4rem;
+    background-color: var(--felt);
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.levelfordeling__slot--laast {
+    cursor: default;
+    background-color: var(--svagt-felt);
+}
+
+.levelfordeling__slot--over {
+    background-color: var(--hover);
+    outline: 1px solid var(--tekst-svag);
+}
+
+.levelfordeling__pulje {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 60px;
+    min-height: 2rem;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+}
+
+.levelfordeling__token {
+    background-color: var(--knap);
+    border-radius: 0.4rem;
+    padding: 0.25rem 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    cursor: grab;
+    user-select: none;
+    width: 3rem;
+}
+
+.levelfordeling__token:hover {
+    background-color: var(--knap-hover);
+}
+
+.levelfordeling__token--valgt {
+    color: var(--tekst-aktiv);
+}
+
+.levelfordeling__token--laast {
+    background-color: var(--svagt-felt);
+    color: var(--tekst-svag);
+    cursor: default;
+}
+
+
+
 /* ================= */
 /* === UTILITIES === */
 /* ================= */
