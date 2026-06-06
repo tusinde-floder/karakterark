@@ -69,6 +69,7 @@ let karakter = {
 
 let effektiveEvner = {};
 let udstyrEffekter = {};
+let rustningsStraf = {};
 
 
 
@@ -127,13 +128,13 @@ function opdaterStatus() {
 }
 
 function opdaterEvner() {
-    opdaterEvne('form', effektiveEvner.form);
-    opdaterEvne('sind', effektiveEvner.sind);
-    opdaterEvne('intuition', effektiveEvner.intuition);
-    opdaterEvne('styrke', effektiveEvner.styrke);
-    opdaterEvne('behaendighed', effektiveEvner.behaendighed);
-    opdaterEvne('visdom', effektiveEvner.visdom);
-    opdaterEvne('mystik', effektiveEvner.mystik);
+    opdaterEvne('form');
+    opdaterEvne('sind');
+    opdaterEvne('intuition');
+    opdaterEvne('styrke');
+    opdaterEvne('behaendighed');
+    opdaterEvne('visdom');
+    opdaterEvne('mystik');
 }
 
 function opdaterInventarOgNoter() {
@@ -266,33 +267,10 @@ function visArk() {
 // === HJÆLPEBEREGNERE ===
 // =======================
 
-function beregnUdstyrForskydning() {
-    const resultat = { form: 0, sind: 0, intuition: 0, styrke: 0, behaendighed: 0, visdom: 0, mystik: 0 };
-    karakter.valgtUdstyr.forEach(id => {
-        const udstyr = altUdstyr.find(u => u.id === id);
-        if (!udstyr?.forskydning) return;
-        for (const [evne, værdi] of Object.entries(udstyr.forskydning)) {
-            if (evne in resultat) resultat[evne] += værdi;
-        }
-    });
-    return resultat;
-}
-
-// Få den her til at virke:
-function beregnUdstyrEffekter() {
-    const resultat = { huRegen: 0, mentalForsvar: 0 };
-    karakter.valgtUdstyr.forEach(id => {
-        const udstyr = altUdstyr.find(u => u.id === id);
-        if (!udstyr?.effekt) return;
-        for (const [effekt, værdi] of Object.entries(udstyr.effekt)) {
-            if (effekt in resultat) resultat[effekt] += værdi;
-        }
-    });
-    return resultat;
-}
-
 // Ressourcer
 function beregnRessourcer() {
+    afgoerRustningsStraf();
+
     const vitalMax = beregnVitalMax(effektiveEvner.form);
     karakter.livVital = vitalMax;
     karakter.livMax = karakter.livVital - (karakter.forvitring * Math.ceil(karakter.livVital / 20));
@@ -308,8 +286,8 @@ function beregnRessourcer() {
     karakter.sejdMax = Math.max(0, sejdMax);
     if (karakter.sejdNu > karakter.sejdMax) karakter.sejdNu = karakter.sejdMax;
 
-    const huMax = Math.max(1, beregnHuMax(effektiveEvner.intuition) - karakter.laesioner);
-    const huRegen = Math.max(0, beregnHuRegen(effektiveEvner.intuition) - karakter.udmattelse);
+    const huMax = Math.max(1, beregnHuMax(effektiveEvner.intuition) + (rustningsStraf.maksHu ?? 0) - karakter.laesioner);
+    const huRegen = Math.max(0, beregnHuRegen(effektiveEvner.intuition) + (rustningsStraf.huRegen ?? 0) - karakter.udmattelse);
     karakter.huMax = huMax;
     karakter.huRegen = huRegen;
     if (karakter.huNu > karakter.huMax) karakter.huNu = karakter.huMax;
@@ -377,29 +355,53 @@ function opdaterFlaskeIkoner() {
 }
 
 // Evner
-function opdaterEvne(evne, level) {
+function opdaterEvne(evne) {
+    const level = effektiveEvner[evne];
     document.getElementById(evne + '-level').textContent = karakter[evne];
-    const pulje = beregnPulje(level);
-    document.getElementById(evne + '-pulje').textContent = pulje + 'd6';
 
+    const puljeTal = document.getElementById(evne + '-pulje');
+
+    let pulje = beregnPulje(level);
+
+    if (evne === 'behaendighed') {
+        pulje = Math.max(1, beregnPulje(level) + (rustningsStraf.behaendighedsPulje ?? 0));
+    }
+
+    if (pulje < beregnPulje(karakter[evne])) {
+        puljeTal.classList.add('forskudt-ned');
+        puljeTal.classList.remove('forskudt-op');
+    } else if (pulje > beregnPulje(karakter[evne])) {
+        puljeTal.classList.remove('forskudt-ned');
+        puljeTal.classList.add('forskudt-op');
+    } else {
+        puljeTal.classList.remove('forskudt-ned');
+        puljeTal.classList.remove('forskudt-op');
+    }
+
+    puljeTal.textContent = pulje + 'd6';
 
     const forskudt = document.getElementById(evne + '-forskudt');
+    forskudt.textContent = level;
+
+    
     const forskydningsTal = document.getElementById(evne + '-forskydning-vaerdi');
     ['evne__level--forskudt-op', 'evne__level--ikke-forskudt', 'evne__level--forskudt-ned'].forEach(cls => 
         forskudt.classList.remove(cls)
     );
 
-    if (effektiveEvner[evne] === karakter[evne]) {
-        forskudt.textContent = level;
+    if (karakter.forskydning[evne] === 0) {
         forskydningsTal.textContent = 0;
+    } else if (karakter.forskydning[evne] > 0) {
+        forskydningsTal.textContent = '+' + karakter.forskydning[evne];
+    } else if (karakter.forskydning[evne] < 0) {
+        forskydningsTal.textContent = karakter.forskydning[evne];
+    }
+
+    if (effektiveEvner[evne] === karakter[evne]) {
         forskudt.classList.add('evne__level--ikke-forskudt');
     } else if (effektiveEvner[evne] > karakter[evne]) {
-        forskudt.textContent = level;
-        forskydningsTal.textContent = '+' + karakter.forskydning[evne];
         forskudt.classList.add('evne__level--forskudt-op');
     } else if (effektiveEvner[evne] < karakter[evne]) {
-        forskudt.textContent = level;
-        forskydningsTal.textContent = karakter.forskydning[evne];
         forskudt.classList.add('evne__level--forskudt-ned');
     }
 }
@@ -468,6 +470,108 @@ function beregnSekvensPulje() {
 
 
 
+// ==============
+// === UDSTYR ===
+// ==============
+
+function hentRustningsgrad() {
+    let rustningsgrad = 0;
+    karakter.valgtUdstyr.forEach(id => {
+        const udstyr = altUdstyr.find(u => u.id === id);
+        if (!udstyr?.effekt?.rustningsgrad) return;
+        rustningsgrad += udstyr.effekt.rustningsgrad;
+    });
+    return rustningsgrad;
+}
+
+const rustningsNiveauer = {
+    "Let rustning": 1,
+    "Mellem rustning": 2,
+    "Tung rustning": 3,
+    "Enorm rustning": 4
+};
+
+function hentStyrkeNiveau(styrke) {
+    if (styrke >= 40) return 4;
+    if (styrke >= 30) return 3;
+    if (styrke >= 20) return 2;
+    if (styrke >= 10) return 1;
+    return 0;
+}
+
+function beregnRustningsStrafniveau() {
+    const rustning = altUdstyr.find(u =>
+        karakter.valgtUdstyr.includes(u.id) && u.plads === "krop"
+    );
+
+    if (!rustning) return 0;
+
+    const rustningsNiveau = rustningsNiveauer[rustning.type] ?? 0;
+    const styrkeNiveau = hentStyrkeNiveau(effektiveEvner.styrke);
+
+    return Math.max(0, rustningsNiveau - styrkeNiveau);
+}
+
+function afgoerRustningsStraf() {
+    const strafniveau = beregnRustningsStrafniveau();
+
+    if (strafniveau === 0) {
+        rustningsStraf = {};
+    } else if (strafniveau === 1) {
+        rustningsStraf = {
+            behaendighedsPulje: -1
+        }
+    } else if (strafniveau === 2) {
+        rustningsStraf = {
+            behaendighedsPulje: -1,
+            bevaegelse: -1
+        }
+    } else if (strafniveau === 3) {
+        rustningsStraf = {
+            behaendighedsPulje: -1,
+            bevaegelse: -1,
+            maksHu: -1
+        }
+    } else if (strafniveau === 4) {
+        rustningsStraf = {
+            behaendighedsPulje: -1,
+            bevaegelse: -1,
+            maksHu: -1,
+            huRegen: -1
+        }
+    }
+}
+
+
+function beregnUdstyrForskydning() {
+    const resultat = { form: 0, sind: 0, intuition: 0, styrke: 0, behaendighed: 0, visdom: 0, mystik: 0 };
+    karakter.valgtUdstyr.forEach(id => {
+        const udstyr = altUdstyr.find(u => u.id === id);
+        if (!udstyr?.forskydning) return;
+        for (const [evne, værdi] of Object.entries(udstyr.forskydning)) {
+            if (evne in resultat) resultat[evne] += værdi;
+        }
+    });
+    return resultat;
+}
+
+// Få den her til at virke:
+function beregnUdstyrEffekter() {
+    const resultat = { huRegen: 0, mentalForsvar: 0 };
+    karakter.valgtUdstyr.forEach(id => {
+        const udstyr = altUdstyr.find(u => u.id === id);
+        if (!udstyr?.effekt) return;
+        for (const [effekt, værdi] of Object.entries(udstyr.effekt)) {
+            if (effekt in resultat) resultat[effekt] += værdi;
+        }
+    });
+    return resultat;
+}
+
+
+
+
+
 // ==================
 // === RESSOURCER ===
 // ==================
@@ -529,16 +633,6 @@ function visSkadetype() {
         fysiskknap.classList.remove('skadevaelger__valg--aktiv');
         mentalknap.classList.add('skadevaelger__valg--aktiv');
     }
-}
-
-function hentRustningsgrad() {
-    let rustningsgrad = 0;
-    karakter.valgtUdstyr.forEach(id => {
-        const udstyr = altUdstyr.find(u => u.id === id);
-        if (!udstyr?.effekt?.rustningsgrad) return;
-        rustningsgrad += udstyr.effekt.rustningsgrad;
-    });
-    return rustningsgrad;
 }
 
 function livSkade() {
@@ -1241,19 +1335,18 @@ function saetBrugtVisning(id, brugt) {
 }
 
 function opdaterValgsKort() {
-    const klasseBeholder = document.getElementById('klassefaerdigheder-valg');
-    klasseBeholder.innerHTML = '';
-    const evneBeholder = document.getElementById('evnefaerdigheder-valg');
-    evneBeholder.innerHTML = '';
+    const beholder = document.getElementById('faerdigheder-valg');
+    beholder.innerHTML = '';
     klasseFaerdigheder
         .filter(v => v.kvalifikation.includes(karakter.klasse))
-        .forEach(faerdighed => valgsKort(faerdighed, klasseBeholder));
+        .forEach(faerdighed => valgsKort(faerdighed));
     evneFaerdigheder
         .filter(v => karakter.faerdigheder.includes(v.id))
-        .forEach(faerdighed => valgsKort(faerdighed, evneBeholder));
+        .forEach(faerdighed => valgsKort(faerdighed));
 }
 
-function valgsKort(faerdighed, beholder) {
+function valgsKort(faerdighed) {
+    const beholder = document.getElementById('faerdigheder-valg');
     const id = faerdighed.id;
     const kort = opretFaerdighedskort(faerdighed);
     beholder.appendChild(kort);
@@ -1347,7 +1440,7 @@ function laerKortUkendt(faerdighed, beholder) {
 
         const [evne, kravLevel] = Object.entries(faerdighed.levelKrav)[0];
         if (effektiveEvner[evne] < kravLevel) {
-            visBesked(`${faerdighed.navn} kræver ${evneVisningsnavn[evne]} ${kravLevel}.`);
+            visBesked(`${faerdighed.navn} kræver ${evneVisningsnavn[evne]} ${kravLevel}. Din effektive ${evneVisningsnavn[evne]} er ${effektiveEvner[evne]}.`);
             return;
         }
 

@@ -339,6 +339,10 @@ input::-webkit-inner-spin-button {
     border-radius: 0.5rem;
 }
 
+.linje {
+    border-bottom: 1px solid var(--hover);
+}
+
 
 
 /* ================= */
