@@ -882,6 +882,13 @@ input::-webkit-inner-spin-button {
     color: var(--tekst-haard);
 }
 
+.laas-op-knap--laast, .laas-op-knap--laast:hover {
+    background-color: var(--felt);
+    color: var(--tekst-svag);
+    cursor: not-allowed;
+    border: none;
+}
+
 
 
 /* SEKTION: EVNER */

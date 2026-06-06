@@ -675,7 +675,7 @@
         "beskrivelse": "Én gang per cyklus kan du lade stærke smerter passere.\n\nI 2 runder kan du ignorere én (ikke kritisk) læsion."
         },
         {
-        "id": "f_evne_form_afbød",
+        "id": "f_evne_form_afboed",
         "navn": "Afbød",
         "kvalifikation": "Form 50",
         "type": "aktiv",
@@ -685,7 +685,7 @@
         "beskrivelse": "Én gang per cyklus kan du afbøde al skade fra ét angreb, der rammer dig."
         },
         {
-        "id": "f_evne_form_udød",
+        "id": "f_evne_form_udoed",
         "navn": "Udød",
         "kvalifikation": "Form 60",
         "type": "aktiv",
@@ -785,7 +785,7 @@
         "beskrivelse": "Én gang per cyklus kan du lave et kald mod himlen. Du kan fordoble skaden på dine næste to angreb, men reducerer din maksimale Hu med 1 indtil næste cyklus."
         },
         {
-        "id": "f_evne_styrke_skælv",
+        "id": "f_evne_styrke_skaelv",
         "navn": "Skælv",
         "kvalifikation": "Styrke 30",
         "type": "aktiv",
@@ -805,7 +805,7 @@
         "beskrivelse": "Én gang per cyklus kan du samle din fysiske kraft i ét angreb. Dit næste angreb på denne tur ignorerer al skadesreduktion og angrebets skade fordobles. Hvis angrebet rammer med en fuldtræffer, kastes målet 3 spænd væk fra dig."
         },
         {
-        "id": "f_evne_styrke_lemlæstelse",
+        "id": "f_evne_styrke_lemlaestelse",
         "navn": "Lemlæstelse",
         "kvalifikation": "Styrke 50",
         "type": "aktiv",
@@ -815,7 +815,7 @@
         "beskrivelse": "Én gang per cyklus, når du laver et angreb, kan du bruge din kraft til at påføre dit mål en automatisk læsion. Målet får en læsion selvom du ikke har påført skade svarende til halvdelen af deres maksimale Liv."
         },
         {
-        "id": "f_evne_behaendighed_spæn",
+        "id": "f_evne_behaendighed_spaen",
         "navn": "Spæn",
         "kvalifikation": "Behændighed 20",
         "type": "aktiv",
@@ -895,7 +895,7 @@
         "beskrivelse": "Én gang per cyklus, når du laver et rul i Visdom eller Sind, kan du vælge at rulle alle terninger om. Det er resultatet af det nye rul, der gælder."
         },
         {
-        "id": "f_evne_visdom_cyklisk-forståelse",
+        "id": "f_evne_visdom_cyklisk-forstaaelse",
         "navn": "Cyklisk forståelse",
         "kvalifikation": "Visdom 60",
         "type": "aktiv",
@@ -915,7 +915,7 @@
         "beskrivelse": "Én gang per cyklus kan du ofre dit helbred og tage skade svarende til halvdelen af dit maksimale Liv (uden at få en læsion) for at hele dybe sår. Du kan helbrede op til 2 læsioner på enten dig selv eller en allieret, du berører."
         },
         {
-        "id": "f_evne_mystik_tidslig-forståelse",
+        "id": "f_evne_mystik_tidslig-forstaeelse",
         "navn": "Tidslig forståelse",
         "kvalifikation": "Mystik 30",
         "type": "aktiv",
@@ -925,7 +925,7 @@
         "beskrivelse": "Én gang per cyklus kan du rette dit sind til cyklussens tidslighed for at forudse en begivenhed.\n\nDu kan bede Spilmesteren fortælle dig hvilken handling, en fjende du kan se, vil tage på deres næste tur. Spilmesteren skal svare efter bedste evne."
         },
         {
-        "id": "f_evne_mystik_katlas-bøn",
+        "id": "f_evne_mystik_katlas-boen",
         "navn": "Katlas bøn",
         "kvalifikation": "Mystik 40",
         "type": "aktiv",
@@ -945,7 +945,7 @@
         "beskrivelse": "Én gang per cyklus kan du røre en person og give dem en del af din kraft.\n\nSkaden af målets næste angreb (der ikke bruger Sejd) fordobles, mens skaden af dit næste angreb halveres."
         },
         {
-        "id": "f_evne_mystik_livshæver",
+        "id": "f_evne_mystik_livshaever",
         "navn": "Livshæver",
         "kvalifikation": "Mystik 60",
         "type": "aktiv",

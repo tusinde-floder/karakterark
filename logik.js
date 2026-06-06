@@ -1448,14 +1448,27 @@ function opdaterLaerKort() {
     const kendteBeholder = document.getElementById('kendte-faerdigheder-laer');
     kendteBeholder.innerHTML = '';
     klasseFaerdigheder
-        .filter(v => v.kvalifikation.includes(karakter.klasse))
+        .filter(f => f.kvalifikation.includes(karakter.klasse))
+        .forEach(faerdighed => laerKortKendt(faerdighed, kendteBeholder));
+    evneFaerdigheder
+        .filter(f => karakter.faerdigheder.includes(f.id))
         .forEach(faerdighed => laerKortKendt(faerdighed, kendteBeholder));
 
-    const ukendteBeholder = document.getElementById('ukendte-faerdigheder-laer');
-    ukendteBeholder.innerHTML = '';
+    evneNoegler.forEach(evne => {
+        const beholder = document.getElementById(`ukendte-faerdigheder-${evne}`);
+        if (beholder) beholder.innerHTML = '';
+    });
+
     evneFaerdigheder
         .filter(v => !karakter.faerdigheder.includes(v.id))
-        .forEach(faerdighed => laerKortUkendt(faerdighed, ukendteBeholder));
+        .forEach(faerdighed => {
+            const evnetype = faerdighed.id.split('_')[2];
+            const beholder = document.getElementById(`ukendte-faerdigheder-${evnetype}`);
+            
+            if (beholder) {
+                laerKortUkendt(faerdighed, beholder);
+            }
+        });
 }
 
 function laerKortKendt(faerdighed, beholder) {
@@ -1466,6 +1479,7 @@ function laerKortKendt(faerdighed, beholder) {
 function laerKortUkendt(faerdighed, beholder) {
     const knap = document.createElement('div');
     const kort = opretFaerdighedskort(faerdighed);
+    const titel = kort.querySelector(`#titel-${faerdighed.id}`);
     const knapOgKort = document.createElement('div');
     const pris = faerdighed.levelKrav ? Object.values(faerdighed.levelKrav)[0] : null;
 
@@ -1475,6 +1489,13 @@ function laerKortUkendt(faerdighed, beholder) {
     kort.classList.add('hvid-kant');
 
     // VIS KORT ANERLEDES HVIS MAN IKKE OPFYLDER LEVEL-KRAV
+    const [evne, kravLevel] = Object.entries(faerdighed.levelKrav)[0];
+
+    if (kravLevel > karakter[evne]) {
+        kort.classList.remove('hvid-kant');
+        knap.classList.add('laas-op-knap--laast');
+        titel.classList.add('inaktiv');
+    }
 
     knapOgKort.appendChild(knap);
     knapOgKort.appendChild(kort);
@@ -1490,9 +1511,8 @@ function laerKortUkendt(faerdighed, beholder) {
             return;
         }
 
-        const [evne, kravLevel] = Object.entries(faerdighed.levelKrav)[0];
-        if (effektiveEvner[evne] < kravLevel) {
-            visBesked(`${faerdighed.navn} kræver ${evneVisningsnavn[evne]} ${kravLevel}. Din effektive ${evneVisningsnavn[evne]} er ${effektiveEvner[evne]}.`);
+        if (karakter[evne] < kravLevel) {
+            visBesked(`${faerdighed.navn} kræver ${evneVisningsnavn[evne]} ${kravLevel}. Dit ${evneVisningsnavn[evne]}-level er ${karakter[evne]}.`);
             return;
         }
 
