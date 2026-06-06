@@ -2289,6 +2289,11 @@ const karakterGrundlag = {
     endeligtDoed: false,
 
     noter: "",
+
+    arktilstand: {
+        fysiskskade: true,
+        aktivfane: ''
+    }
 };
 
 function gemData() {
