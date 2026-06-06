@@ -1124,7 +1124,8 @@ function udstyrKort(udstyr, beholder) {
     if (udstyr.levelKrav) {
         const krav = Object.entries(udstyr.levelKrav)
             .filter(([evne]) => evneVisningsnavn[evne])
-            .map(([evne, værdi]) => `${evneVisningsnavn[evne]} ${værdi}`)
+            .map(([evne, værdi]) => 
+                `${evneVisningsnavn[evne]} <span class="${værdi > effektiveEvner[evne] ? 'forskudt-ned' : ''}">${værdi}</span>`)
             .join(`<br>`);
 
         const vistKrav = document.createElement('div');
