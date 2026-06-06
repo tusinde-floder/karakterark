@@ -226,6 +226,10 @@ input::-webkit-inner-spin-button {
     width: fit-content;
 }
 
+.sektion__titel:hover {
+    color: var(--tekst-svag);
+}
+
 .sektion__knap {
     background-color: var(--sektion-knap);
     color: var(--tekst-svag);

@@ -63,7 +63,7 @@ let karakter = {
 
     arktilstand: {
         fysiskskade: true,
-        aktivfane: ''
+        aktivfane: 'basisskade'
     }
 }
 
@@ -2316,7 +2316,7 @@ const karakterGrundlag = {
 
     arktilstand: {
         fysiskskade: true,
-        aktivfane: ''
+        aktivfane: 'basisskade'
     }
 };
 
@@ -2371,6 +2371,10 @@ function hentStandardKlasse(klasse) {
     const klasseFaerdighederne = klasseFaerdighederRef.map(ref => {
         return klasseFaerdigheder.find(f => f.id === ref.id);
     });
+    const klasseUdstyrRef = klasseData.udstyr || [];
+    const klasseUdstyr = klasseUdstyrRef.map(ref => {
+        return altUdstyr.find(u => u.id === ref.id);
+    })
 
     Object.assign(karakter, baseKarakter, klasseData);
     karakter.vaaben = [...klasseVaaben];
@@ -2378,6 +2382,8 @@ function hentStandardKlasse(klasse) {
     karakter.valgteFaerdigheder = klasseFaerdighederne.map(f => f.id);
     karakter.besvaergelser = (karakter.besvaergelser || []).map(b => typeof b === 'string' ? b : b.id);
     karakter.valgteBesvaergelser = [...karakter.besvaergelser];
+    karakter.udstyr = klasseUdstyr.map(u => u.id);
+    karakter.valgtUdstyr = klasseUdstyr.map(u => u.id);
 
     opdaterVistData(); // beregner livMax, sejdMax, huMax ud fra evnelevels
     karakter.livNu  = karakter.livMax;

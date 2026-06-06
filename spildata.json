@@ -141,7 +141,7 @@
             {
             "id": "f_klasse_militarist_ordre"
             }
-            ],
+        ],
         "vaaben": [
             {
             "id": "v_klingespyd_militarist"
@@ -152,7 +152,12 @@
             {
             "id": "v_skjold_rundskjold"
             }
-            ]
+        ],
+        "udstyr": [
+            {
+                "id": "u_rustning_laederrustning"
+            }
+        ]
         }
     ],
 
