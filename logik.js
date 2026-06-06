@@ -1077,8 +1077,16 @@ function udstyrKort(udstyr, beholder) {
 
         const effekt = Object.entries(udstyr.effekt)
         .map(([effekt, værdi]) => {
-                const værditekst = værdi > 0 && effekt !== 'rustningsgrad' ? '+' + værdi : værdi;
-                return `${effektVisningsnavn[effekt]} <span>${værditekst}</span>`;
+            const værdiklasse = værdi > 0 ? 'forskudt-op' : 'forskudt-ned';
+            let værditekst = værdi;
+
+            if (effekt === 'mentalForsvar') {
+                værditekst = '+' + værdi + 'd6';
+            } else if (værdi > 0 && effekt !== 'rustningsgrad') {
+                værditekst = '+' + værdi;
+            }
+
+            return `${effektVisningsnavn[effekt]} <span class="${værdiklasse}">${værditekst}</span>`;
             })
             .join(`<br>`);
 

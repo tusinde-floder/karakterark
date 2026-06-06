@@ -606,6 +606,7 @@ input::-webkit-inner-spin-button {
     font-size: 0.65rem;
     width: fit-content;
     cursor: pointer;
+    margin-bottom: 0.5rem;
 }
 
 .emne-raekke__titel:hover {
