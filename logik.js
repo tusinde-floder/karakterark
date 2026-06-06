@@ -292,6 +292,9 @@ function beregnRessourcer() {
     karakter.huMax = huMax;
     karakter.huRegen = huRegen;
     if (karakter.huNu > karakter.huMax) karakter.huNu = karakter.huMax;
+
+    const bevaegelse = Math.max(0, 3 + (rustningsStraf.bevaegelse ?? 0) + (udstyrEffekter.bevaegelse ?? 0));
+    karakter.bevaegelse = bevaegelse;
 }
 
 function saetRessourcer() {
@@ -301,13 +304,16 @@ function saetRessourcer() {
     document.getElementById('livNu').textContent = karakter.livNu;
     document.getElementById('sejdMax').textContent = karakter.sejdMax;
     document.getElementById('sejdNu').textContent = karakter.sejdNu;
-    document.getElementById('huMax').classList.toggle('forskudt-ned', karakter.huMax < beregnHuMax(karakter.intuition));
-    document.getElementById('huRegen').classList.toggle('forskudt-ned', karakter.huRegen < beregnHuRegen(karakter.intuition));
-    document.getElementById('huMax').classList.toggle('forskudt-op', karakter.huMax > beregnHuMax(karakter.intuition));
-    document.getElementById('huRegen').classList.toggle('forskudt-op', karakter.huRegen > beregnHuRegen(karakter.intuition));
     document.getElementById('huMax').textContent = karakter.huMax;
+    document.getElementById('huMax').classList.toggle('forskudt-ned', karakter.huMax < beregnHuMax(karakter.intuition));
+    document.getElementById('huMax').classList.toggle('forskudt-op', karakter.huMax > beregnHuMax(karakter.intuition));
     document.getElementById('huRegen').textContent = karakter.huRegen;
+    document.getElementById('huRegen').classList.toggle('forskudt-ned', karakter.huRegen < beregnHuRegen(karakter.intuition));
+    document.getElementById('huRegen').classList.toggle('forskudt-op', karakter.huRegen > beregnHuRegen(karakter.intuition));
     document.getElementById('huNu').textContent = karakter.huNu;
+    document.getElementById('bevaegelse').textContent = karakter.bevaegelse;
+    document.getElementById('bevaegelse').classList.toggle('forskudt-ned', karakter.bevaegelse < 3);
+    document.getElementById('bevaegelse').classList.toggle('forskudt-op', karakter.bevaegelse > 3);
     document.getElementById('flaskerNu').textContent = karakter.flaskerNu;
     document.getElementById('flaskerMax').textContent = karakter.flaskerMax;
 }
@@ -544,31 +550,7 @@ function afgoerRustningsStraf() {
         }
     }
 
-    visRustningsStraf(strafniveau);
 }
-
-function visRustningsStraf(strafniveau) {
-    const rustning = altUdstyr.find(u =>
-        karakter.valgtUdstyr.includes(u.id) && u.plads === "krop"
-    );
-    const visning = document.getElementById('vist-rustningsstraf');
-
-    if (strafniveau === 0 || !rustning) {
-        visning.innerHTML = '';
-        return;
-    }
-
-    const straftekst = `${rustning.navn} er for tung til din Styrke og giver dig
-        <br>-1d6 til Behændighedsrul`
-        + (strafniveau > 1 ? ',<br>-1 spænd/Hu i bevægelse' : '')
-        + (strafniveau > 2 ? ',<br>-1 Hu regenerering' : '')
-        + (strafniveau > 3 ? ',<br>-1 maksimalt Hu' : '')
-        + '.';
-
-    visning.innerHTML =  straftekst;
-}
-
-
 
 function beregnUdstyrForskydning() {
     const resultat = { form: 0, sind: 0, intuition: 0, styrke: 0, behaendighed: 0, visdom: 0, mystik: 0 };
@@ -891,6 +873,35 @@ function genskabVitalitet() {
 // === BEREDSKAB OG KORT ===
 // =========================
 
+const tooltip = document.getElementById('tooltip');
+
+function tilknytTooltip(element, hentIndhold) {
+    element.addEventListener('mouseenter', () => {
+        tooltip.innerHTML = hentIndhold();
+        tooltip.style.display = 'block';
+    });
+
+    element.addEventListener('mousemove', (e) => {
+        const gap = 11;
+        let x = e.clientX + gap;
+        let y = e.clientY + gap;
+
+        if (x + tooltip.offsetWidth > window.innerWidth) {
+            x = e.clientX - tooltip.offsetWidth - gap;
+        }
+
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+    });
+
+    element.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+    });
+}
+
+
+
+
 function tilfoejVaaben() {
     const input = document.getElementById('tilfoej-vaaben-input');
     const tekst = input.value || '';
@@ -1037,41 +1048,12 @@ function genererVaabenKort(vaaben) {
     if (ingenSkadeAngreb) {kort.querySelector('.kort__angreb').classList.add('skjul-indhold')};
     if (ingenSkadeTeknik) {kort.querySelector('.kort__teknikvaerdi').classList.add('skjul-indhold')};
 
-    visTooltip();
-
-    function visTooltip() {
-        const vaabenTooltip = document.getElementById('vaaben-tooltip');
-
-        kort.addEventListener('mouseenter', () => {
-            const prefix = vaaben.opgradering ? '+' : '';
-            vaabenTooltip.innerHTML =
-                `<div style="color: var(--tekst-aktiv); font-weight: 600;">${vaaben.navn} <span>${vaaben.opgradering ? '+' + vaaben.opgradering : ''}</span></div>` // Navn
-                + vaaben.beskrivelse // Beskrivelse
-                + '<br><br>Teknik: ' + `${vaaben.teknik.navn} <br>` // Tekniknavn
-                + vaaben.teknik.beskrivelse; // Teknikbeskrivelse
-            vaabenTooltip.style.display = 'block';
-        });
-
-        kort.addEventListener('mousemove', (e) => {
-            const gap = 11;
-            let x = e.clientX + gap;
-            let y = e.clientY + gap;
-
-            const tooltipBredde = vaabenTooltip.offsetWidth;
-            const viewportBredde = window.innerWidth;
-
-            if (x + tooltipBredde > viewportBredde) {
-                x = e.clientX - tooltipBredde - gap;
-            }
-
-            vaabenTooltip.style.left = x + 'px';
-            vaabenTooltip.style.top = y + 'px';
-        });
-
-        kort.addEventListener('mouseleave', () => {
-            vaabenTooltip.style.display = 'none';
-        });
-    }
+    tilknytTooltip(kort, () =>
+        `<div style="color: var(--tekst-aktiv); font-weight: 600;">${vaaben.navn}${vaaben.opgradering ? ' +' + vaaben.opgradering : ''}</div>`
+        + vaaben.beskrivelse
+        + '<br><br>Teknik: ' + vaaben.teknik.navn + '<br>'
+        + vaaben.teknik.beskrivelse
+    );
 }
 
 function beregnBasisskade(vaaben) {
@@ -1218,6 +1200,25 @@ function udstyrKort(udstyr, beholder) {
         effektBeholder.appendChild(visteffekt);
     }
 
+    const rustning = udstyr.plads === "krop" ? 
+    altUdstyr.find(u =>u.id === udstyr.id) : null;
+    const strafniveau = beregnRustningsStrafniveau();
+
+    if (beholder === 'udstyr-beholder') {
+        if (strafniveau === 0 || !rustning) {
+            return;
+        }
+
+        tilknytTooltip(kort, () =>
+        `${rustning.navn} er for tung til din Styrke og giver dig
+        <br>-1d6 til Behændighedsrul`
+        + (strafniveau > 1 ? ',<br>-1 spænd/Hu i bevægelse' : '')
+        + (strafniveau > 2 ? ',<br>-1 Hu regenerering' : '')
+        + (strafniveau > 3 ? ',<br>-1 maksimalt Hu' : '')
+        + '.'
+    );
+    }
+
     if (beholder !== 'udstyr-beholder') {
         const erValgt = karakter.valgtUdstyr.includes(udstyr.id);
 
@@ -1279,7 +1280,6 @@ function udstyrKort(udstyr, beholder) {
         }
     }
 }
-
 
 function saetBrugtVisningUdstyr(id, brugt) {
     const elementer = [

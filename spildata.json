@@ -1576,7 +1576,7 @@
             },
 
             "effekt": {
-                "rustningsgrad": 12
+                "rustningsgrad": 11
             },
             "forskydning": {
                 "mystik": 1
@@ -1594,7 +1594,7 @@
             },
 
             "effekt": {
-                "rustningsgrad": 10
+                "rustningsgrad": 9
             },
             "forskydning": {
                 "behaendighed": 1
@@ -1612,7 +1612,7 @@
             },
 
             "effekt": {
-                "rustningsgrad": 15
+                "rustningsgrad": 18
             },
             "forskydning": {
                 "behaendighed": -1

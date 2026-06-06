@@ -659,7 +659,7 @@ input::-webkit-inner-spin-button {
     background-color: var(--tekst-svag);
 }
 
-.vaaben-tooltip {
+.tooltip {
     display: none;
     position: fixed;
     background: var(--tooltip-baggrund);
