@@ -178,7 +178,7 @@ klik('vaaben-liste-knap', genererVaabenliste);
 klik('tilfoej-vaaben-knap', tilfoejVaaben);
 klik('udstyr-vaelger-knap', () => {
     aabenVindue('udstyr');
-    opdaterUdstyrKortVaelger();
+    opdaterUdstyrKortValg();
 });
 klik('tilfoej-udstyr-knap', tilfoejUdstyr);
 klik('annuller-udstyr', () => lukVindue('udstyr'));

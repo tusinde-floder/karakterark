@@ -954,7 +954,7 @@ function tilfoejUdstyr() {
 
     karakter.udstyr.push(udstyr.id);
     gemData();
-    opdaterUdstyrKortVaelger();
+    opdaterUdstyrKortValg();
     visBesked(`Du har fået ${udstyr.navn}.`);
     input.value = '';
 }
@@ -1075,17 +1075,38 @@ function opdaterUdstyrKortBeredskab() {
     document.getElementById('udstyr-beholder').innerHTML = '';
     altUdstyr
         .filter(u => karakter.valgtUdstyr.includes(u.id))
-        .forEach(udstyr => udstyrKort(udstyr, 'udstyr-beholder'));
+        .forEach(udstyr => udstyrKortBeredskab(udstyr));
 }
 
-function opdaterUdstyrKortVaelger() {
+function opdaterUdstyrKortValg() {
     const raekkefoelge = ['hoved', 'vedhaeng', 'krop'].forEach(plads => {
         document.getElementById('kendt-udstyr-' + plads).innerHTML = '';
         altUdstyr
             .filter(u => karakter.udstyr.includes(u.id))
             .filter(u => u.plads.includes(plads))
-            .forEach(udstyr => udstyrKort(udstyr, 'kendt-udstyr-' + plads));
+            .forEach(udstyr => udstyrKortValg(udstyr, 'kendt-udstyr-' + plads));
     });
+}
+
+function udstyrKortBeredskab(udstyr) {
+    const beholder = document.getElementById('udstyr-beholder');
+    const kort = opretUdstyrKort(udstyr, beholder);
+    beholder.appendChild(kort);
+    const id = beholder + udstyr.id;
+
+    udstyrKortBasis(udstyr, id);
+    if (udstyr.percyklus) tilfoejPercyklusKnap(id);
+    tilfoejRustningsStrafTooltip(kort, udstyr);
+}
+
+function udstyrKortValg(udstyr, beholder) {
+    const kort = opretUdstyrKort(udstyr, beholder);
+    document.getElementById(beholder).appendChild(kort);
+    const id = beholder + udstyr.id;
+
+    udstyrKortBasis(udstyr, id);
+    if (udstyr.percyklus) tilfoejPercyklusTekst(id);
+    tilfoejUdstyrValgInteraktion(kort, udstyr, id);
 }
 
 function opretUdstyrKort(udstyr, beholder) {
@@ -1114,10 +1135,7 @@ function opretUdstyrKort(udstyr, beholder) {
     return kort;
 }
 
-function udstyrKort(udstyr, beholder) {
-    const kort = opretUdstyrKort(udstyr, beholder);
-    document.getElementById(beholder).appendChild(kort);
-    const id = beholder + udstyr.id;
+function udstyrKortBasis(udstyr, id) {
     const kravBeholder = document.getElementById(`info-krav-${id}`);
     const effektBeholder = document.getElementById(`info-effekt-${id}`);
 
@@ -1131,32 +1149,6 @@ function udstyrKort(udstyr, beholder) {
         const vistKrav = document.createElement('div');
         vistKrav.innerHTML = `${krav}`;
         kravBeholder.appendChild(vistKrav);
-    }
-
-    if (udstyr.percyklus) {
-        if (beholder !== 'udstyr-beholder') {
-            const percyklusTekst = document.createElement('div');
-            percyklusTekst.textContent = 'per cyklus';
-            effektBeholder.appendChild(percyklusTekst);
-        } else {
-            const knap = document.createElement('div');
-            knap.className = 'brug-knap';
-            knap.id = `cyklus-brug-${id}`;
-            knap.textContent = 'Brug';
-            effektBeholder.appendChild(knap);
-
-            saetBrugtVisningUdstyr(id, karakter.brugteFaerdigheder.includes(id));
-            knap.addEventListener('click', () => {
-                const brugt = karakter.brugteFaerdigheder.includes(id);
-                if (brugt) {
-                    karakter.brugteFaerdigheder = karakter.brugteFaerdigheder.filter(f => f !== id);
-                } else {
-                    karakter.brugteFaerdigheder.push(id);
-                }
-                saetBrugtVisningUdstyr(id, !brugt);
-                gemData();
-            });
-        }
     }
 
     if (udstyr.forskydning) {
@@ -1201,16 +1193,46 @@ function udstyrKort(udstyr, beholder) {
         effektBeholder.appendChild(visteffekt);
     }
 
+}
+
+function tilfoejPercyklusKnap(id) {
+    const effektBeholder = document.getElementById(`info-effekt-${id}`);
+    const knap = document.createElement('div');
+    knap.className = 'brug-knap';
+    knap.id = `cyklus-brug-${id}`;
+    knap.textContent = 'Brug';
+    effektBeholder.appendChild(knap);
+
+    saetBrugtVisningUdstyr(id, karakter.brugteFaerdigheder.includes(id));
+    knap.addEventListener('click', () => {
+        const brugt = karakter.brugteFaerdigheder.includes(id);
+        if (brugt) {
+            karakter.brugteFaerdigheder = karakter.brugteFaerdigheder.filter(f => f !== id);
+        } else {
+            karakter.brugteFaerdigheder.push(id);
+        }
+        saetBrugtVisningUdstyr(id, !brugt);
+        gemData();
+    });
+}
+
+function tilfoejPercyklusTekst(id) {
+    const effektBeholder = document.getElementById(`info-effekt-${id}`);
+    const tekst = document.createElement('div');
+    tekst.textContent = 'per cyklus';
+    effektBeholder.appendChild(tekst);
+}
+
+function tilfoejRustningsStrafTooltip(kort, udstyr) {
     const rustning = udstyr.plads === "krop" ? 
     altUdstyr.find(u =>u.id === udstyr.id) : null;
     const strafniveau = beregnRustningsStrafniveau();
 
-    if (beholder === 'udstyr-beholder') {
-        if (strafniveau === 0 || !rustning) {
-            return;
-        }
+    if (strafniveau === 0 || !rustning) {
+        return;
+    }
 
-        tilknytTooltip(kort, () =>
+    tilknytTooltip(kort, () =>
         `${rustning.navn} er for tung til din Styrke og giver dig
         <br>-1d6 til Behændighedsrul`
         + (strafniveau > 1 ? ',<br>-1 spænd/Hu i bevægelse' : '')
@@ -1218,66 +1240,65 @@ function udstyrKort(udstyr, beholder) {
         + (strafniveau > 3 ? ',<br>-1 maksimalt Hu' : '')
         + '.'
     );
+
+}
+
+function tilfoejUdstyrValgInteraktion(kort, udstyr, id) {
+    const erValgt = karakter.valgtUdstyr.includes(udstyr.id);
+    const titel = document.getElementById(`titel-${id}`);
+    const type = document.getElementById(`type-${id}`);
+    const krav = document.getElementById(`info-krav-${id}`);
+    const effekt = document.getElementById(`info-effekt-${id}`);
+    const beskrivelse = document.getElementById(`beskrivelse-${id}`);
+
+    if (!erValgt) {
+        titel.classList.add('inaktiv');
+        type.classList.add('inaktiv');
+        krav.classList.add('inaktiv');
+        effekt.classList.add('inaktiv');
+        beskrivelse.classList.add('inaktiv');
     }
 
-    if (beholder !== 'udstyr-beholder') {
-        const erValgt = karakter.valgtUdstyr.includes(udstyr.id);
+    kort.addEventListener('click', () => {vaelgUdstyr()});
 
-        const titel = document.getElementById(`titel-${id}`);
-        const type = document.getElementById(`type-${id}`);
-        const krav = document.getElementById(`info-krav-${id}`);
-        const effekt = document.getElementById(`info-effekt-${id}`);
-        const beskrivelse = document.getElementById(`beskrivelse-${id}`);
-
-        if (!erValgt) {
+    function vaelgUdstyr() {
+        if (erValgt) {
+            karakter.valgtUdstyr = karakter.valgtUdstyr.filter(u => u !== udstyr.id);
             titel.classList.add('inaktiv');
             type.classList.add('inaktiv');
             krav.classList.add('inaktiv');
             effekt.classList.add('inaktiv');
             beskrivelse.classList.add('inaktiv');
-        }
 
-        kort.addEventListener('click', () => {vaelgUdstyr()});
+            gemData();
+            opdaterUdstyrKortValg();
+            opdaterVistData();
+        } else {
+            const konflikt = karakter.valgtUdstyr.some(valgId => {
+                const valgUdstyr = altUdstyr.find(u => u.id === valgId);
+                return valgUdstyr.plads === udstyr.plads;
+            });
 
-        function vaelgUdstyr() {
-            if (erValgt) {
-                karakter.valgtUdstyr = karakter.valgtUdstyr.filter(u => u !== udstyr.id);
-                titel.classList.add('inaktiv');
-                type.classList.add('inaktiv');
-                krav.classList.add('inaktiv');
-                effekt.classList.add('inaktiv');
-                beskrivelse.classList.add('inaktiv');
-
-                gemData();
-                opdaterUdstyrKortVaelger();
-                opdaterVistData();
-            } else {
-                const konflikt = karakter.valgtUdstyr.some(valgId => {
-                    const valgUdstyr = altUdstyr.find(u => u.id === valgId);
-                    return valgUdstyr.plads === udstyr.plads;
-                });
-
-                if (konflikt) {
-                    const beskeder = {
-                        'hoved': 'Du har allerede udstyr på hovedet.',
-                        'vedhaeng': 'Du har allerede et vedhæng.',
-                        'krop': 'Du har allerede udstyr på kroppen.'
-                    };
-                    visBesked(beskeder[udstyr.plads]);
-                    return;
-                }
-
-                karakter.valgtUdstyr.push(udstyr.id);
-                titel.classList.remove('inaktiv');
-                type.classList.remove('inaktiv');
-                krav.classList.remove('inaktiv');
-                effekt.classList.remove('inaktiv');
-                beskrivelse.classList.remove('inaktiv');
-
-                gemData();
-                opdaterUdstyrKortVaelger();
-                opdaterVistData();
+            if (konflikt) {
+                const beskeder = {
+                    'hoved': 'Du har allerede udstyr på hovedet.',
+                    'vedhaeng': 'Du har allerede et vedhæng.',
+                    'krop': 'Du har allerede udstyr på kroppen.'
+                };
+                visBesked(beskeder[udstyr.plads]);
+                return;
             }
+
+            karakter.valgtUdstyr.push(udstyr.id);
+            titel.classList.remove('inaktiv');
+            type.classList.remove('inaktiv');
+            krav.classList.remove('inaktiv');
+            effekt.classList.remove('inaktiv');
+            beskrivelse.classList.remove('inaktiv');
+
+            gemData();
+            opdaterUdstyrKortValg();
+            opdaterVistData();
         }
     }
 }
@@ -1292,6 +1313,8 @@ function saetBrugtVisningUdstyr(id, brugt) {
     elementer.forEach(el => el.classList.toggle('inaktiv', brugt));
     document.getElementById(`cyklus-brug-${id}`).textContent = brugt ? 'Brugt' : 'Brug';
 }
+
+
 
 // Færdigheder
 function opdaterFaerdighedKortBrug() {
