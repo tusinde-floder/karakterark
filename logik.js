@@ -270,6 +270,7 @@ function visArk() {
 // Ressourcer
 function beregnRessourcer() {
     afgoerRustningsStraf();
+    saetUdstyrEffekter();
 
     const vitalMax = beregnVitalMax(effektiveEvner.form);
     karakter.livVital = vitalMax;
@@ -287,7 +288,7 @@ function beregnRessourcer() {
     if (karakter.sejdNu > karakter.sejdMax) karakter.sejdNu = karakter.sejdMax;
 
     const huMax = Math.max(1, beregnHuMax(effektiveEvner.intuition) + (rustningsStraf.maksHu ?? 0) - karakter.laesioner);
-    const huRegen = Math.max(0, beregnHuRegen(effektiveEvner.intuition) + (rustningsStraf.huRegen ?? 0) - karakter.udmattelse);
+    const huRegen = Math.max(0, beregnHuRegen(effektiveEvner.intuition) + (rustningsStraf.huRegen ?? 0) + (udstyrEffekter.huRegen ?? 0) - karakter.udmattelse);
     karakter.huMax = huMax;
     karakter.huRegen = huRegen;
     if (karakter.huNu > karakter.huMax) karakter.huNu = karakter.huMax;
@@ -300,8 +301,10 @@ function saetRessourcer() {
     document.getElementById('livNu').textContent = karakter.livNu;
     document.getElementById('sejdMax').textContent = karakter.sejdMax;
     document.getElementById('sejdNu').textContent = karakter.sejdNu;
-    document.getElementById('huMax').classList.toggle('reduceret', karakter.huMax < beregnHuMax(effektiveEvner.intuition));
-    document.getElementById('huRegen').classList.toggle('reduceret', karakter.huRegen < beregnHuRegen(effektiveEvner.intuition));
+    document.getElementById('huMax').classList.toggle('forskudt-ned', karakter.huMax < beregnHuMax(karakter.intuition));
+    document.getElementById('huRegen').classList.toggle('forskudt-ned', karakter.huRegen < beregnHuRegen(karakter.intuition));
+    document.getElementById('huMax').classList.toggle('forskudt-op', karakter.huMax > beregnHuMax(karakter.intuition));
+    document.getElementById('huRegen').classList.toggle('forskudt-op', karakter.huRegen > beregnHuRegen(karakter.intuition));
     document.getElementById('huMax').textContent = karakter.huMax;
     document.getElementById('huRegen').textContent = karakter.huRegen;
     document.getElementById('huNu').textContent = karakter.huNu;
@@ -556,7 +559,7 @@ function beregnUdstyrForskydning() {
 }
 
 // Få den her til at virke:
-function beregnUdstyrEffekter() {
+function saetUdstyrEffekter() {
     const resultat = { huRegen: 0, mentalForsvar: 0 };
     karakter.valgtUdstyr.forEach(id => {
         const udstyr = altUdstyr.find(u => u.id === id);
@@ -565,7 +568,8 @@ function beregnUdstyrEffekter() {
             if (effekt in resultat) resultat[effekt] += værdi;
         }
     });
-    return resultat;
+
+    udstyrEffekter = resultat;
 }
 
 
