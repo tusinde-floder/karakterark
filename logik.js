@@ -264,6 +264,11 @@ function visArk() {
     document.getElementById('eksporter-knap').style.display = '';
 }
 
+function skjulArk() {
+    document.getElementById('beholder').style.display = 'none';
+    document.getElementById('eksporter-knap').style.display = 'none';
+}
+
 
 
 // =======================
@@ -2274,7 +2279,7 @@ function initLevelfordeling(laastEvne) {
     };
     fordelingsTilstand.tildelt[laastEvne] = 18;
 
-    document.getElementById('levelfordeling').style.display = 'block';
+    document.getElementById('levelfordeling-klasse').textContent = karakter.klasse;
     genererLevelfordelingUI();
 }
 
@@ -2432,6 +2437,35 @@ function dropPaaPulje(e) {
 
     dragKilde = null;
     genererLevelfordelingUI();
+}
+
+function bekræftLevelfordeling() {
+    const { tildelt } = fordelingsTilstand;
+
+    const alleUdfyldt = evneNoegler.every(evne => tildelt[evne] !== null);
+    if (!alleUdfyldt) {
+        visBesked('Fordel alle levels før du fortsætter.');
+        return;
+    }
+
+    karakter.navn = document.getElementById('levelfordeling-navn').value.trim() || 'Karakter';
+
+    for (const evne of evneNoegler) {
+        karakter[evne] = tildelt[evne];
+    }
+
+    opdaterVistData();
+    karakter.livNu  = karakter.livMax;
+    karakter.sejdNu = karakter.sejdMax;
+    karakter.huNu   = karakter.huMax;
+    karakter.flaskerNu = karakter.flaskerMax;
+    gemData();
+    opdaterVistData();
+
+    document.getElementById('levelfordeling').style.display = 'none';
+    visArk();
+    lukVindue('levelfordeling');
+    visBesked(`${karakter.navn} oprettet.`);
 }
 
 
@@ -2593,14 +2627,10 @@ function hentStandardKlasse(klasse) {
     karakter.udstyr = klasseUdstyr.map(u => u.id);
     karakter.valgtUdstyr = klasseUdstyr.map(u => u.id);
 
-    opdaterVistData(); // beregner livMax, sejdMax, huMax ud fra evnelevels
-    karakter.livNu  = karakter.livMax;
-    karakter.sejdNu = karakter.sejdMax;
-    karakter.huNu   = karakter.huMax;
-    karakter.flaskerNu = karakter.flaskerMax;
     gemData();
-    opdaterVistData();
-    visArk();
-    visBesked(`Karakter nulstillet til ${karakterVisningsnavn[klasse]}`);
+    skjulArk();
+    const startEvne = evneNoegler.find(evne => klasseData[evne] === 18);
     lukVindue('ny-karakter');
+    initLevelfordeling(startEvne);
+    aabenVindue('levelfordeling');
 }

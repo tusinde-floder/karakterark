@@ -52,15 +52,11 @@ klik('annuller-karakter', () => {
 );
 
 
-['bytyv', 'forkynder', 'hedonist', 'lovloes', 'laerd', 'militarist'].forEach(klasse => {
+['asket', 'bytyv', 'forkynder', 'hedonist', 'lovloes', 'laerd', 'militarist'].forEach(klasse => {
     klik(`${klasse}-knap`, () => hentStandardKlasse(klasse));
 });
 
-klik('asket-knap', () => {
-    lukVindue('ny-karakter');
-    aabenVindue('levelfordeling');
-    initLevelfordeling('sind');
-})
+klik('bekraeft-levelfordeling', bekræftLevelfordeling);
 
 klik('annuller-ny-karakter', () => {
     lukVindue('ny-karakter');

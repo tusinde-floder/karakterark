@@ -1479,8 +1479,22 @@ input::-webkit-inner-spin-button {
     font-size: 0.8rem;
     display: grid;
     grid-template-columns: 250px 100px;
-    margin: auto;
+    margin: 1rem auto;
     justify-self: center;
+}
+
+.levelfordeling__input {
+    display: flex;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+.levelfordeling__info {
+    display: flex;
+    justify-self: center;
+    margin: 0.25rem;
+    color: var(--tekst-svag);
 }
 
 .levelfordeling__evner {
@@ -1530,12 +1544,12 @@ input::-webkit-inner-spin-button {
 
 .levelfordeling__pulje {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    gap: 0.25rem;
     min-width: 60px;
     min-height: 2rem;
-    padding: 0.25rem;
     border-radius: 0.5rem;
+    justify-self: end;
 }
 
 .levelfordeling__token {
