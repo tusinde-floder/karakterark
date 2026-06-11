@@ -169,14 +169,15 @@ function opdaterArkTilstand() {
 
 
 // Vis besked
-function visBesked(tekst) {
+function visBesked(tekst, sekunder = 6) {
+    const visningstid = sekunder * 1000;
     const container = document.getElementById('besked-beholder');
     const el = document.createElement('div');
     el.className = 'besked';
     el.textContent = tekst;
     container.appendChild(el);
     el.addEventListener('click', () => fjernBesked(el));
-    el._timer = setTimeout(() => fjernBesked(el), 6000);
+    el._timer = setTimeout(() => fjernBesked(el), visningstid);
 }
 
 function fjernBesked(el) {
@@ -762,6 +763,10 @@ function drikFlaske(type) {
         visBesked('Du har ikke flere stenvandsflasker.');
         return;}
 
+    if (karakter.huNu <= 0) {
+        visBesked('Du har ikke nok Hu.');
+        return;}
+
     if (type === 'liv') {
         if (karakter.livNu === karakter.livMax) {
             visBesked('Du har allerede fuld Liv.');
@@ -843,6 +848,7 @@ function doed() {
     const vitalMax = beregnVitalMax(effektiveEvner.form);
     const nyLivMax = vitalMax - (karakter.forvitring * Math.ceil(vitalMax * 0.05));
     karakter.livNu = Math.max(0, nyLivMax);
+    karakter.brugteFaerdigheder = [];
     
     efterladDraaber();
     
@@ -853,9 +859,9 @@ function doed() {
     }
 
     if (karakter.draaberEfterladt > 0) {
-        visBesked('Du er død og genopvågnet. Du har efterladt ' + karakter.draaberEfterladt + ' Dråber.' + haabBesked);
+        visBesked('Du er død og genopvågnet. Du har efterladt ' + karakter.draaberEfterladt + ' Dråber.' + haabBesked, 9);
     } else {
-        visBesked('Du er død og genopvågnet.' + haabBesked);
+        visBesked('Du er død og genopvågnet.' + haabBesked, 9);
     }
 
     opdaterVistData();
@@ -2454,7 +2460,8 @@ function bekræftLevelfordeling() {
         karakter[evne] = tildelt[evne];
     }
 
-    opdaterVistData();
+    opdaterEffektiveEvner();
+    beregnRessourcer();
     karakter.livNu  = karakter.livMax;
     karakter.sejdNu = karakter.sejdMax;
     karakter.huNu   = karakter.huMax;
@@ -2462,7 +2469,6 @@ function bekræftLevelfordeling() {
     gemData();
     opdaterVistData();
 
-    document.getElementById('levelfordeling').style.display = 'none';
     visArk();
     lukVindue('levelfordeling');
     visBesked(`${karakter.navn} oprettet.`);
