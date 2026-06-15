@@ -143,11 +143,9 @@ function opdaterBeredskab() {
     opdaterUdstyrKortBeredskab();
 }
 
-// Tjek endelig død
-function erEndeligDoed() {
-    if (!karakter.endeligtDoed) return false;
-        visBesked('Du er endeligt død.');
-        return true;
+function opdaterArkTilstand() {
+    visSkadetype();
+    visFane();
 }
 
 function opdaterDoedVisning() {
@@ -158,9 +156,11 @@ function opdaterDoedVisning() {
     }
 }
 
-function opdaterArkTilstand() {
-    visSkadetype();
-    visFane();
+// Tjek endelig død
+function erEndeligDoed() {
+    if (!karakter.endeligtDoed) return false;
+        visBesked('Du er endeligt død.');
+        return true;
 }
 
 // Vis besked
@@ -1113,7 +1113,45 @@ function opdaterFaerdighedKortBrug() {
     document.getElementById('faerdighed-beholder').innerHTML = '';
     alleFaerdigheder
         .filter(v => karakter.valgteFaerdigheder.includes(v.id))
-        .forEach(faerdighed => brugsKort(faerdighed));
+        .forEach(faerdighed => faerdighedKortBrug(faerdighed));
+}
+
+function opdaterFaerdighedKortValg() {
+    const beholder = document.getElementById('faerdigheder-valg');
+    beholder.innerHTML = '';
+    klasseFaerdigheder
+        .filter(v => v.kvalifikation.includes(karakter.klasse))
+        .forEach(faerdighed => faerdighedKortValg(faerdighed));
+    evneFaerdigheder
+        .filter(v => karakter.faerdigheder.includes(v.id))
+        .forEach(faerdighed => faerdighedKortValg(faerdighed));
+}
+
+function opdaterFaerdighedKortLaer() {
+    const kendteBeholder = document.getElementById('kendte-faerdigheder-laer');
+    kendteBeholder.innerHTML = '';
+    klasseFaerdigheder
+        .filter(f => f.kvalifikation.includes(karakter.klasse))
+        .forEach(faerdighed => faerdighedKortLaerKendt(faerdighed, kendteBeholder));
+    evneFaerdigheder
+        .filter(f => karakter.faerdigheder.includes(f.id))
+        .forEach(faerdighed => faerdighedKortLaerKendt(faerdighed, kendteBeholder));
+
+    evneNoegler.forEach(evne => {
+        const beholder = document.getElementById(`ukendte-faerdigheder-${evne}`);
+        if (beholder) beholder.innerHTML = '';
+    });
+
+    evneFaerdigheder
+        .filter(v => !karakter.faerdigheder.includes(v.id))
+        .forEach(faerdighed => {
+            const evnetype = faerdighed.id.split('_')[2];
+            const beholder = document.getElementById(`ukendte-faerdigheder-${evnetype}`);
+            
+            if (beholder) {
+                faerdighedKortLaerUkendt(faerdighed, beholder);
+            }
+        });
 }
 
 function opretFaerdighedskort(faerdighed) {
@@ -1139,7 +1177,7 @@ function opretFaerdighedskort(faerdighed) {
     return kort;
 }
 
-function brugsKort(faerdighed) {
+function faerdighedKortBrug(faerdighed) {
     const id = faerdighed.id;
     const kort = opretFaerdighedskort(faerdighed);
     document.getElementById('faerdighed-beholder').appendChild(kort);
@@ -1165,18 +1203,7 @@ function brugsKort(faerdighed) {
     });
 }
 
-function opdaterValgsKort() {
-    const beholder = document.getElementById('faerdigheder-valg');
-    beholder.innerHTML = '';
-    klasseFaerdigheder
-        .filter(v => v.kvalifikation.includes(karakter.klasse))
-        .forEach(faerdighed => valgsKort(faerdighed));
-    evneFaerdigheder
-        .filter(v => karakter.faerdigheder.includes(v.id))
-        .forEach(faerdighed => valgsKort(faerdighed));
-}
-
-function valgsKort(faerdighed) {
+function faerdighedKortValg(faerdighed) {
     const beholder = document.getElementById('faerdigheder-valg');
     const id = faerdighed.id;
     const kort = opretFaerdighedskort(faerdighed);
@@ -1219,43 +1246,16 @@ function valgsKort(faerdighed) {
 
         gemData();
         opdaterVistData();
-        opdaterValgsKort();
+        opdaterFaerdighedKortValg();
     }
 }
 
-function opdaterLaerKort() {
-    const kendteBeholder = document.getElementById('kendte-faerdigheder-laer');
-    kendteBeholder.innerHTML = '';
-    klasseFaerdigheder
-        .filter(f => f.kvalifikation.includes(karakter.klasse))
-        .forEach(faerdighed => laerKortKendt(faerdighed, kendteBeholder));
-    evneFaerdigheder
-        .filter(f => karakter.faerdigheder.includes(f.id))
-        .forEach(faerdighed => laerKortKendt(faerdighed, kendteBeholder));
-
-    evneNoegler.forEach(evne => {
-        const beholder = document.getElementById(`ukendte-faerdigheder-${evne}`);
-        if (beholder) beholder.innerHTML = '';
-    });
-
-    evneFaerdigheder
-        .filter(v => !karakter.faerdigheder.includes(v.id))
-        .forEach(faerdighed => {
-            const evnetype = faerdighed.id.split('_')[2];
-            const beholder = document.getElementById(`ukendte-faerdigheder-${evnetype}`);
-            
-            if (beholder) {
-                laerKortUkendt(faerdighed, beholder);
-            }
-        });
-}
-
-function laerKortKendt(faerdighed, beholder) {
+function faerdighedKortLaerKendt(faerdighed, beholder) {
     const kort = opretFaerdighedskort(faerdighed);
     beholder.appendChild(kort);
 }
 
-function laerKortUkendt(faerdighed, beholder) {
+function faerdighedKortLaerUkendt(faerdighed, beholder) {
     const knap = document.createElement('div');
     const kort = opretFaerdighedskort(faerdighed);
     const titel = kort.querySelector(`#titel-${faerdighed.id}`);
@@ -1282,24 +1282,24 @@ function laerKortUkendt(faerdighed, beholder) {
     knap.addEventListener('click', () => {
         laerFaerdighed(faerdighed.id)
     })
+}
 
-    function laerFaerdighed(id) {
-        if (karakter.draaber < pris) {
-            visBesked('Du har ikke nok Dråber.');
-            return;
-        }
-
-        if (karakter[evne] < kravLevel) {
-            visBesked(`${faerdighed.navn} kræver ${evneVisningsnavn[evne]} ${kravLevel}. Dit ${evneVisningsnavn[evne]}-level er ${karakter[evne]}.`);
-            return;
-        }
-
-        karakter.faerdigheder.push(id);
-        karakter.draaber -= pris;
-        gemData();
-        opdaterLaerKort();
-        opdaterVistData();
+function laerFaerdighed(id) {
+    if (karakter.draaber < pris) {
+        visBesked('Du har ikke nok Dråber.');
+        return;
     }
+
+    if (karakter[evne] < kravLevel) {
+        visBesked(`${faerdighed.navn} kræver ${evneVisningsnavn[evne]} ${kravLevel}. Dit ${evneVisningsnavn[evne]}-level er ${karakter[evne]}.`);
+        return;
+    }
+
+    karakter.faerdigheder.push(id);
+    karakter.draaber -= pris;
+    gemData();
+    opdaterFaerdighedKortLaer();
+    opdaterVistData();
 }
 
 
@@ -1331,11 +1331,11 @@ function opdaterMagiKortBrug() {
         .forEach(besvaergelse => magiKortBrug(besvaergelse));
 }
 
-function tjekLeder(lederKrav) {
-    return karakter.vaaben.find(v =>
-        karakter.valgteVaaben.includes(v.id) &&
-        v.leder === lederKrav
-    ) ?? null;
+function opdaterMagiKortValg() {
+    document.getElementById('kendt-magi').innerHTML = '';
+    alleBesvaergelser
+        .filter(b => karakter.besvaergelser.includes(b.id))
+        .forEach(besvaergelse => magiKortValg(besvaergelse));
 }
 
 function opretMagiKort(besvaergelse, sted) {
@@ -1394,13 +1394,6 @@ function magiKortBrug(besvaergelse) {
     </div>`
 }
 
-function opdaterMagiKortValg() {
-    document.getElementById('kendt-magi').innerHTML = '';
-    alleBesvaergelser
-        .filter(b => karakter.besvaergelser.includes(b.id))
-        .forEach(besvaergelse => magiKortValg(besvaergelse));
-}
-
 function magiKortValg(besvaergelse) {
     const beholder = document.getElementById('kendt-magi');
     const kort = opretMagiKort(besvaergelse, 'valg');
@@ -1418,7 +1411,6 @@ function magiKortValg(besvaergelse) {
     </div>`
 
     const erValgt = karakter.valgteBesvaergelser.includes(besvaergelse.id);
-    const maksAktive = 3;
     const titel = kort.querySelector('.kort__titel');
     const basis = kort.querySelector('.kort__basis');
     const forbrug = kort.querySelectorAll('.kort__forbrug');
@@ -1432,41 +1424,49 @@ function magiKortValg(besvaergelse) {
 
     kort.addEventListener('click', () => {
         aktiverMagi(besvaergelse);
-    });
+    });    
+}
 
-    function aktiverMagi(id) {
-        const kvalificeret = tjekMagiLevelKrav(besvaergelse);
-        const erValgt = karakter.valgteBesvaergelser.includes(besvaergelse.id);
+function aktiverMagi(besvaergelse) {
+    const kvalificeret = tjekMagiLevelKrav(besvaergelse);
+    const erValgt = karakter.valgteBesvaergelser.includes(besvaergelse.id);
+    const maksAktive = 3;
 
-        if (erValgt) {
-            kort.classList.add('inaktiv');
-            titel.classList.add('inaktiv');
-            basis.classList.add('inaktiv');
-            forbrug.forEach(e => e.classList.add('inaktiv'));
+    if (erValgt) {
+        kort.classList.add('inaktiv');
+        titel.classList.add('inaktiv');
+        basis.classList.add('inaktiv');
+        forbrug.forEach(e => e.classList.add('inaktiv'));
 
-            karakter.valgteBesvaergelser =
-                karakter.valgteBesvaergelser.filter(id => id !== besvaergelse.id);
-        } else {
-            if (karakter.valgteBesvaergelser.length >= maksAktive) {
-                visBesked('Du kan kun have højst 3 aktive besværgelser.');
-                return;
-            }
-
-            if (!kvalificeret) {
-                visBesked(`Du møder ikke kravene for at kunne bruge ${besvaergelse.navn}`);
-                return;
-            }
-            karakter.valgteBesvaergelser.push(besvaergelse.id);
-            kort.classList.remove('inaktiv');
-            titel.classList.remove('inaktiv');
-            basis.classList.remove('inaktiv');
-            forbrug.forEach(e => e.classList.remove('inaktiv'));
+        karakter.valgteBesvaergelser =
+            karakter.valgteBesvaergelser.filter(id => id !== besvaergelse.id);
+    } else {
+        if (karakter.valgteBesvaergelser.length >= maksAktive) {
+            visBesked('Du kan kun have højst 3 aktive besværgelser.');
+            return;
         }
 
-        gemData();
-        opdaterVistData();
-        opdaterMagiKortValg();
+        if (!kvalificeret) {
+            visBesked(`Du møder ikke kravene for at kunne bruge ${besvaergelse.navn}`);
+            return;
+        }
+        karakter.valgteBesvaergelser.push(besvaergelse.id);
+        kort.classList.remove('inaktiv');
+        titel.classList.remove('inaktiv');
+        basis.classList.remove('inaktiv');
+        forbrug.forEach(e => e.classList.remove('inaktiv'));
     }
+
+    gemData();
+    opdaterVistData();
+    opdaterMagiKortValg();
+}
+
+function tjekLeder(lederKrav) {
+    return karakter.vaaben.find(v =>
+        karakter.valgteVaaben.includes(v.id) &&
+        v.leder === lederKrav
+    ) ?? null;
 }
 
 function tjekMagiLevelKrav(besvaergelse) {

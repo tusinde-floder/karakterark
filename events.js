@@ -136,13 +136,13 @@ klik('bekraeft-hvil', hvil);
 
     klik('faerdighed-valg-knap', () => {
         aabenVindue('faerdighed-valg');
-        opdaterValgsKort();
+        opdaterFaerdighedKortValg();
     });
     klik('annuller-faerdighed-valg', () => lukVindue('faerdighed-valg'));
 
     klik('faerdighed-laer-knap', () => {
         aabenVindue('faerdighed-laer');
-        opdaterLaerKort();
+        opdaterFaerdighedKortLaer();
     });
     klik('annuller-faerdighed-laer', () => lukVindue('faerdighed-laer'));
 
