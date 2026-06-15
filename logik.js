@@ -712,6 +712,7 @@ function justerStat(stat, aendring, min = 0, max = Infinity) {
 // === BEREDSKAB OG KORT ===
 // =========================
 
+// Generelle funktioner
 const tooltip = document.getElementById('tooltip');
 
 function tilknytTooltip(element, hentIndhold) {
@@ -738,44 +739,19 @@ function tilknytTooltip(element, hentIndhold) {
     });
 }
 
-
-
-function tilfoejMagi() {
-    const input = document.getElementById('tilfoej-magi-input');
-    const tekst = input.value || '';
-    if (tekst === '') {return};
-
-    const besvaergelse = alleBesvaergelser.find(b => tekst.includes(b.id));
-
-    if (!besvaergelse) {
-        visBesked(`${tekst} kunne ikke findes.`);
-        return;
-    }
-
-    karakter.besvaergelser.push(besvaergelse.id);
-    gemData();
-    opdaterMagiKortValg();
-    visBesked(`Du har lært ${besvaergelse.navn}.`);
-    input.value = '';
+function saetBrugtVisning(id, brugt, elementIds) {
+    elementIds.forEach(elId => {
+        const el = document.getElementById(elId);
+        if (el) el.classList.toggle('inaktiv', brugt);
+    });
+    document.getElementById(`cyklus-brug-${id}`).textContent = brugt ? 'Brugt' : 'Brug';
 }
 
-function tilfoejUdstyr() {
-    const input = document.getElementById('tilfoej-udstyr-input');
-    const tekst = input.value || '';
-    if (tekst === '') {return};
-
-    const udstyr = altUdstyr.find(u => tekst.includes(u.id));
-
-    if (!udstyr) {
-        visBesked(`${tekst} kunne ikke findes.`);
-        return;
-    }
-
-    karakter.udstyr.push(udstyr.id);
-    gemData();
-    opdaterUdstyrKortValg();
-    visBesked(`Du har fået ${udstyr.navn}.`);
-    input.value = '';
+function opretKort(id) {
+    const kort = document.createElement('div');
+    kort.className = 'kort';
+    kort.id = id + '-kort';
+    return kort;
 }
 
 // Våben
@@ -816,15 +792,13 @@ function opdaterVaabenKort() {
     document.getElementById('basisskade-beholder').innerHTML = '';
     karakter.vaaben
         .filter(v => karakter.valgteVaaben.includes(v.id))
-        .forEach(vaaben => genererVaabenKort(vaaben));
+        .forEach(vaaben => opretVaabenKort(vaaben));
 }
 
-function genererVaabenKort(vaaben) {
+function opretVaabenKort(vaaben) {
     const beholder = document.getElementById('basisskade-beholder');
     const id = vaaben.id;
-    const kort = document.createElement('div');
-    kort.className = 'kort';
-    kort.id = id + '-kort';
+    const kort = opretKort(id);
     beholder.appendChild(kort);
 
     const basisskade = beregnBasisskade(vaaben);
@@ -888,11 +862,30 @@ function beregnBasisskade(vaaben) {
 
 
 // Udstyr
+function tilfoejUdstyr() {
+    const input = document.getElementById('tilfoej-udstyr-input');
+    const tekst = input.value || '';
+    if (tekst === '') {return};
+
+    const udstyr = altUdstyr.find(u => tekst.includes(u.id));
+
+    if (!udstyr) {
+        visBesked(`${tekst} kunne ikke findes.`);
+        return;
+    }
+
+    karakter.udstyr.push(udstyr.id);
+    gemData();
+    opdaterUdstyrKortValg();
+    visBesked(`Du har fået ${udstyr.navn}.`);
+    input.value = '';
+}
+
 function opdaterUdstyrKortBeredskab() {
     document.getElementById('udstyr-beholder').innerHTML = '';
     altUdstyr
         .filter(u => karakter.valgtUdstyr.includes(u.id))
-        .forEach(udstyr => udstyrKortBeredskab(udstyr));
+        .forEach(udstyr => udstyrKort(udstyr, 'udstyr-beholder', 'beredskab'));
 }
 
 function opdaterUdstyrKortValg() {
@@ -901,36 +894,28 @@ function opdaterUdstyrKortValg() {
         altUdstyr
             .filter(u => karakter.udstyr.includes(u.id))
             .filter(u => u.plads.includes(plads))
-            .forEach(udstyr => udstyrKortValg(udstyr, 'kendt-udstyr-' + plads));
+            .forEach(udstyr => udstyrKort(udstyr, 'kendt-udstyr-' + plads, 'valg'));
     });
 }
 
-function udstyrKortBeredskab(udstyr) {
-    const beholder = document.getElementById('udstyr-beholder');
-    const kort = opretUdstyrKort(udstyr, beholder);
-    beholder.appendChild(kort);
-    const id = beholder + udstyr.id;
-
-    udstyrKortBasis(udstyr, id);
-    if (udstyr.percyklus) tilfoejPercyklusKnap(id);
-    tilfoejRustningsStrafTooltip(kort, udstyr);
-}
-
-function udstyrKortValg(udstyr, beholder) {
+function udstyrKort(udstyr, beholder, tilstand) {
     const kort = opretUdstyrKort(udstyr, beholder);
     document.getElementById(beholder).appendChild(kort);
     const id = beholder + udstyr.id;
 
     udstyrKortBasis(udstyr, id);
-    if (udstyr.percyklus) tilfoejPercyklusTekst(id);
-    tilfoejUdstyrValgInteraktion(kort, udstyr, id);
+
+    if (udstyr.percyklus) {
+        tilstand === 'beredskab' ? tilfoejPercyklusKnap(id) : tilfoejPercyklusTekst(id);
+    }
+
+    if (tilstand === 'beredskab') tilfoejRustningsStrafTooltip(kort, udstyr);
+    else tilfoejUdstyrValgInteraktion(kort, udstyr, id);
 }
 
 function opretUdstyrKort(udstyr, beholder) {
     const id = beholder + udstyr.id;
-    const kort = document.createElement('div');
-    kort.className = 'kort';
-    kort.id = id + '-kort';
+    const kort = opretKort(id);
 
     kort.innerHTML = 
     `<div class="kort__top">
@@ -1020,7 +1005,7 @@ function tilfoejPercyklusKnap(id) {
     knap.textContent = 'Brug';
     effektBeholder.appendChild(knap);
 
-    saetBrugtVisningUdstyr(id, karakter.brugteFaerdigheder.includes(id));
+    saetBrugtVisning(id, karakter.brugteFaerdigheder.includes(id), [`cyklus-brug-${id}`, `titel-${id}`, `beskrivelse-${id}`, `type-${id}`]);
     knap.addEventListener('click', () => {
         const brugt = karakter.brugteFaerdigheder.includes(id);
         if (brugt) {
@@ -1028,7 +1013,7 @@ function tilfoejPercyklusKnap(id) {
         } else {
             karakter.brugteFaerdigheder.push(id);
         }
-        saetBrugtVisningUdstyr(id, !brugt);
+        saetBrugtVisning(id, !brugt, [`cyklus-brug-${id}`, `titel-${id}`, `beskrivelse-${id}`, `type-${id}`]);
         gemData();
     });
 }
@@ -1120,16 +1105,6 @@ function tilfoejUdstyrValgInteraktion(kort, udstyr, id) {
     }
 }
 
-function saetBrugtVisningUdstyr(id, brugt) {
-    const elementer = [
-        document.getElementById(`cyklus-brug-${id}`),
-        document.getElementById(`titel-${id}`),
-        document.getElementById(`beskrivelse-${id}`),
-        document.getElementById(`type-${id}`)
-    ];
-    elementer.forEach(el => el.classList.toggle('inaktiv', brugt));
-    document.getElementById(`cyklus-brug-${id}`).textContent = brugt ? 'Brugt' : 'Brug';
-}
 
 
 
@@ -1143,9 +1118,7 @@ function opdaterFaerdighedKortBrug() {
 
 function opretFaerdighedskort(faerdighed) {
     const id = faerdighed.id;
-    const kort = document.createElement('div');
-    kort.className = 'kort';
-    kort.id = id + '-kort';
+    const kort = opretKort(id);
 
     kort.innerHTML = 
     `<div class="kort__top">
@@ -1179,7 +1152,7 @@ function brugsKort(faerdighed) {
     knap.textContent = 'Brug';
     document.getElementById(`brug-knap-beholder-${id}`).appendChild(knap);
 
-    saetBrugtVisning(id, karakter.brugteFaerdigheder.includes(id));
+    saetBrugtVisning(id, karakter.brugteFaerdigheder.includes(id), [`cyklus-brug-${id}`, `titel-${id}`, `kvalifikation-${id}`, `info-${id}`]);
     knap.addEventListener('click', () => {
         const brugt = karakter.brugteFaerdigheder.includes(id);
         if (brugt) {
@@ -1187,20 +1160,9 @@ function brugsKort(faerdighed) {
         } else {
             karakter.brugteFaerdigheder.push(id);
         }
-        saetBrugtVisning(id, !brugt);
+        saetBrugtVisning(id, !brugt, [`cyklus-brug-${id}`, `titel-${id}`, `kvalifikation-${id}`, `info-${id}`]);
         gemData();
     });
-}
-
-function saetBrugtVisning(id, brugt) {
-    const elementer = [
-        document.getElementById(`cyklus-brug-${id}`),
-        document.getElementById(`titel-${id}`),
-        document.getElementById(`kvalifikation-${id}`),
-        document.getElementById(`info-${id}`),
-    ];
-    elementer.forEach(el => el.classList.toggle('inaktiv', brugt));
-    document.getElementById(`cyklus-brug-${id}`).textContent = brugt ? 'Brugt' : 'Brug';
 }
 
 function opdaterValgsKort() {
@@ -1305,7 +1267,6 @@ function laerKortUkendt(faerdighed, beholder) {
     knap.innerHTML = `Lås op: ${pris} Dråber`;
     kort.classList.add('hvid-kant');
 
-    // VIS KORT ANERLEDES HVIS MAN IKKE OPFYLDER LEVEL-KRAV
     const [evne, kravLevel] = Object.entries(faerdighed.levelKrav)[0];
 
     if (kravLevel > karakter[evne]) {
@@ -1344,6 +1305,25 @@ function laerKortUkendt(faerdighed, beholder) {
 
 
 // Besværgelser
+function tilfoejMagi() {
+    const input = document.getElementById('tilfoej-magi-input');
+    const tekst = input.value || '';
+    if (tekst === '') {return};
+
+    const besvaergelse = alleBesvaergelser.find(b => tekst.includes(b.id));
+
+    if (!besvaergelse) {
+        visBesked(`${tekst} kunne ikke findes.`);
+        return;
+    }
+
+    karakter.besvaergelser.push(besvaergelse.id);
+    gemData();
+    opdaterMagiKortValg();
+    visBesked(`Du har lært ${besvaergelse.navn}.`);
+    input.value = '';
+}
+
 function opdaterMagiKortBrug() {
     document.getElementById('magi-beholder').innerHTML = '';
     alleBesvaergelser
@@ -1360,10 +1340,7 @@ function tjekLeder(lederKrav) {
 
 function opretMagiKort(besvaergelse, sted) {
     const id = besvaergelse.id + '-' + sted;
-    const kort = document.createElement('div');
-
-    kort.className = 'kort';
-    kort.id = id + '-kort';
+    const kort = opretKort(id);
 
     kort.innerHTML = 
     `<div class="kort__top">
