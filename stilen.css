@@ -718,6 +718,11 @@ input::-webkit-inner-spin-button {
     text-transform: uppercase;
 }
 
+.kort__basis--haender {
+    font-size: 0.6rem;
+    color: var(--tekst-svag);
+}
+
 .kort__basis--type {
     font-size: 0.6rem;
     color: var(--tekst-svag);

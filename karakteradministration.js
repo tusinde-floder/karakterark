@@ -385,12 +385,15 @@ function gemVaaben() {
         opgradering: vaabenRedigeringData.midlertidigOpgradering,
         beskrivelse,
         angreb: eksisterende?.angreb ?? { skadeFaktor: 0.5, hu: 1 },
+        haandkrav: eksisterende?.haandkrav ?? 1,
+        levelKrav: eksisterende?.levelKrav ?? {},
         teknik: {
             navn: teknikNavn || 'Teknik',
             beskrivelse: teknikBeskrivelse,
             skadeFaktor: eksisterende?.teknik?.skadeFaktor ?? 1,
             hu: eksisterende?.teknik?.hu ?? 2,
             sejd: eksisterende?.teknik?.sejd ?? 1,
+            haandkrav: eksisterende?.teknik?.haandkrav ?? 1,
         },
         tillaegsevne: eksisterende?.tillaegsevne ?? null,
         tillaegsTaeller: eksisterende?.tillaegsTaeller ?? null,
@@ -796,6 +799,7 @@ const karakterGrundlag = {
 
     vaaben: [],
     valgteVaaben: [],
+    haender: 2,
 
     udstyr: [],
     valgtUdstyr: [],

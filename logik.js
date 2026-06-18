@@ -50,6 +50,7 @@ let karakter = {
 
     vaaben: [],
     valgteVaaben: [],
+    haender: 2,
 
     udstyr: [],
     valgtUdstyr: [],
@@ -136,7 +137,6 @@ function opdaterInventarOgNoter() {
 }
 
 function opdaterBeredskab() {
-    opdaterVaabenRaekke();
     opdaterVaabenKort();
     opdaterFaerdighedKortBrug();
     opdaterMagiKortBrug();
@@ -755,43 +755,9 @@ function opretKort(id) {
 }
 
 // Våben
-function opdaterVaabenRaekke() {
-    const container = document.getElementById('vaaben-raekke');
-    container.innerHTML = '';
-
-    if (!karakter.vaaben || karakter.vaaben.length === 0) {
-        const tom = document.createElement('div');
-        tom.className = 'emne-raekke-tom';
-        tom.textContent = 'Ingen våben.';
-        container.appendChild(tom);
-        return;
-    }
-
-    for (const vaaben of karakter.vaaben) {
-        const erValgt = karakter.valgteVaaben.includes(vaaben.id);
-        const el = document.createElement('div');
-        el.className = 'emne-valg' + (erValgt ? ' aktiv' : '');
-        el.textContent = vaaben.navn + (vaaben.opgradering > 0 ? ' +' + vaaben.opgradering : '');
-
-        el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (karakter.valgteVaaben.includes(vaaben.id)) {
-                karakter.valgteVaaben = karakter.valgteVaaben.filter(id => id !== vaaben.id);
-            } else {
-                karakter.valgteVaaben.push(vaaben.id);
-            }
-            gemData();
-            opdaterVistData();
-        });
-
-        container.appendChild(el);
-    }
-}
-
 function opdaterVaabenKort() {
     document.getElementById('basisskade-beholder').innerHTML = '';
     karakter.vaaben
-        .filter(v => karakter.valgteVaaben.includes(v.id))
         .forEach(vaaben => opretVaabenKort(vaaben));
 }
 
@@ -806,6 +772,8 @@ function opretVaabenKort(vaaben) {
     const teknikSkade = Math.ceil( basisskade * vaaben.teknik.skadeFaktor );
     const angrebHuForbrug = `${vaaben.angreb.hu} Hu`
     const teknikHuForbrug = `${vaaben.teknik.hu} Hu`
+    const haandvisning = vaaben.haandkrav === 2 ? 'To hænder' : 'En hånd';
+    const teknikHaandvisning = vaaben.teknik.haandkrav === 2 ? 'To hænder' : 'En hånd';
 
     kort.innerHTML = 
     `<div class="kort__top">
@@ -814,22 +782,22 @@ function opretVaabenKort(vaaben) {
     </div>
 
     <div class="kort__top">
-        <div></div>
+        <div class="kort__basis--haender">${haandvisning}</div>
         <div class="kort__basis--tillaeg">${ vaaben.tillaegsevne ? '+' + vaaben.tillaegsTaeller + '/' + vaaben.tillaegsNaevner + ' ' + evneVisningsnavn[vaaben.tillaegsevne] : ''}</div>
     </div>
 
     <div class="kort__data">
         <div class="kort__angreb">
             <div class="kort__vaerdi" id="${vaaben.navn}-angreb-skade">${angrebSkade}</div>
-            <div class="kort__forbrug">${vaaben.angreb.hu ? vaaben.angreb.hu + ' Hu' : ''}<span class="kort__forbrug">${vaaben.angreb.sejd ? '· ' + vaaben.angreb.sejd + ' Sejd' : ''}</span></div>
+            <div class="kort__forbrug" id="${vaaben.navn}-hu-forbrug">${vaaben.angreb.hu ? vaaben.angreb.hu + ' Hu' : ''}<span class="kort__forbrug" id="${vaaben.navn}-sejd-forbrug">${vaaben.angreb.sejd ? '· ' + vaaben.angreb.sejd + ' Sejd' : ''}</span></div>
         </div>
 
         <div class="kort__linje">
             <div class="kort__teknik">
                 <div id="${vaaben.teknik.navn}-titel" class="kort__teknik-titel">${vaaben.teknik.navn}</div>
-                <div class="kort__forbrug">${vaaben.teknik.hu ? vaaben.teknik.hu + ' Hu' : ''}
-                <span class="kort__forbrug">${vaaben.teknik.sejd ? '· ' + vaaben.teknik.sejd + ' Sejd' : ''}</span></div>
-                    
+                <div class="kort__forbrug" id="${vaaben.teknik.navn}-hu-forbrug">${vaaben.teknik.hu ? vaaben.teknik.hu + ' Hu' : ''}
+                <span class="kort__forbrug" id="${vaaben.teknik.navn}-sejd-forbrug">${vaaben.teknik.sejd ? '· ' + vaaben.teknik.sejd + ' Sejd' : ''}</span></div>
+                <div class="kort__basis--haender">${teknikHaandvisning}</div>
             </div>
             <div class="kort__teknikvaerdi" id="${vaaben.navn}-teknik-skade">${teknikSkade}</div>
         </div>
@@ -841,12 +809,81 @@ function opretVaabenKort(vaaben) {
     if (ingenSkadeAngreb) {kort.querySelector('.kort__angreb').classList.add('skjul-indhold')};
     if (ingenSkadeTeknik) {kort.querySelector('.kort__teknikvaerdi').classList.add('skjul-indhold')};
 
+    const erValgt = karakter.valgteVaaben.includes(vaaben.id);
+
+    const titelStil = erValgt ? 'color: var(--tekst-aktiv); font-weight: 600;' : '';
+
+    const levelKravVisning = vaaben.levelKrav ? 'Kræver:' + Object.entries(vaaben.levelKrav).map(([evne, niveau]) => ` ${evneVisningsnavn[evne]} ${niveau}`).join(' ·') : '';
+
     tilknytTooltip(kort, () =>
-        `<div style="color: var(--tekst-aktiv); font-weight: 600;">${vaaben.navn}${vaaben.opgradering ? ' +' + vaaben.opgradering : ''}</div>`
+        `<div style="${titelStil}">${vaaben.navn}${vaaben.opgradering ? ' +' + vaaben.opgradering : ''}</div>`
+        + levelKravVisning + '<br>'
         + vaaben.beskrivelse
         + '<br><br>Teknik: ' + vaaben.teknik.navn + '<br>'
         + vaaben.teknik.beskrivelse
     );
+
+    const visteElementer = [
+        `kort-${vaaben.navn}`,
+        `${vaaben.navn}-basis`,
+        `${vaaben.navn}-angreb-skade`,
+        `${vaaben.navn}-hu-forbrug`,
+        `${vaaben.navn}-sejd-forbrug`,
+        `${vaaben.teknik.navn}-titel`,
+        `${vaaben.navn}-teknik-skade`,
+        `${vaaben.teknik.navn}-hu-forbrug`,
+        `${vaaben.teknik.navn}-sejd-forbrug`,
+    ];
+
+    if (!erValgt) {
+        visteElementer.forEach(el => {
+            const domEl = document.getElementById(el);
+            domEl.classList.add('inaktiv');
+        })
+    } else {
+        visteElementer.forEach(el => {
+            const domEl = document.getElementById(el);
+            domEl.classList.remove('inaktiv');
+        })
+    }
+
+    kort.addEventListener('click', (e) => {
+        e.stopPropagation();
+        vaelgVaaben(vaaben);
+    });
+}
+
+function vaelgVaaben(vaaben) {
+    if (karakter.valgteVaaben.includes(vaaben.id)) {
+        karakter.valgteVaaben = karakter.valgteVaaben.filter(id => id !== vaaben.id);
+    } else {
+        const kvalificeret = tjekLevelKrav(vaaben);
+        const brugteHaender = tjekHaender();
+
+        console.log(kvalificeret, brugteHaender);
+        if (brugteHaender + vaaben.haandkrav > karakter.haender) {
+            visBesked(`Du har ikke nok ledige hænder til ${vaaben.navn}.`);
+            return;
+        }
+
+        if (!kvalificeret) {
+            visBesked(`Du opfylder ikke levelkravene for ${vaaben.navn}.`);
+            return;
+        }
+
+        karakter.valgteVaaben.push(vaaben.id);
+    }
+    gemData();
+    opdaterVistData();
+}
+
+function tjekHaender() {
+    let brugteHaender = 0;
+    karakter.valgteVaaben.forEach(id => {
+        const vaaben = alleVaaben.find(v => v.id === id);
+        brugteHaender += vaaben ? vaaben.haandkrav : 0;
+    });
+    return brugteHaender;
 }
 
 function beregnBasisskade(vaaben) {
@@ -1428,7 +1465,7 @@ function magiKortValg(besvaergelse) {
 }
 
 function aktiverMagi(besvaergelse) {
-    const kvalificeret = tjekMagiLevelKrav(besvaergelse);
+    const kvalificeret = tjekLevelKrav(besvaergelse);
     const erValgt = karakter.valgteBesvaergelser.includes(besvaergelse.id);
     const maksAktive = 3;
 
@@ -1469,8 +1506,8 @@ function tjekLeder(lederKrav) {
     ) ?? null;
 }
 
-function tjekMagiLevelKrav(besvaergelse) {
-    const { levelKrav } = besvaergelse;
+function tjekLevelKrav(objekt) {
+    const { levelKrav } = objekt;
 
     if (!levelKrav || Object.keys(levelKrav).length === 0) {
         return true;

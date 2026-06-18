@@ -168,6 +168,7 @@
         "beskrivelse": "Våbenbeskrivelse.",
         "basis": "evne",
         "levelKrav": {},
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -182,7 +183,8 @@
             "skadeFaktor": 1,
             "hu": 2,
             "sejd": 1,
-            "beskrivelse": "Teknikbeskrivelse."
+            "beskrivelse": "Teknikbeskrivelse.",
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -194,6 +196,7 @@
         "levelKrav": {
             "behaendighed": 10
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -208,7 +211,8 @@
             "beskrivelse": "Koncentrer kraften af dit slag til et enkelt punkt på dit måls krop. Gør basisskade og målet får -1d6 til deres næste angreb.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -221,6 +225,7 @@
             "behaendighed": 15,
             "styrke": 10
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": "styrke",
@@ -235,7 +240,8 @@
             "beskrivelse": "Hvis du rammer, gør du basisskade og kan trække målet 1 spænd mod dig.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -247,6 +253,7 @@
         "levelKrav": {
             "behaendighed": 15
         },
+        "haandkrav": 2,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -261,7 +268,8 @@
             "beskrivelse": "Kræver to hænder. Angrib med den ene dolk, flyt dig op til 1 spænd, og angrib med den anden dolk. Gør halv basisskade for hvert angreb.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 2
         },
         "noter": ""
         },
@@ -273,6 +281,7 @@
         "levelKrav": {
             "behaendighed": 12
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -287,7 +296,8 @@
             "beskrivelse": "Skær et dybt sår i målet. Hvis de rammes, tager de basisskade nu og begynder at bløde. I starten af målets næste tur, tager de halv basisskade.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -299,6 +309,7 @@
         "levelKrav": {
             "mystik": 14
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": "sakral",
         "tillaegsevne": null,
@@ -312,7 +323,8 @@
             "navn": "Slag",
             "beskrivelse": "Slå et mål indenfor 1 spænd. Gør halv basisskade.",
             "skadeFaktor": 0.5,
-            "hu": 2
+            "hu": 2,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -324,6 +336,7 @@
         "levelKrav": {
             "styrke": 10
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -338,7 +351,8 @@
             "beskrivelse": "Kræver to hænder. Slå et mål indenfor 1 spænd. Gør dobbelt basisskade.",
             "skadeFaktor": 2,
             "hu": 3,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 2
         },
         "noter": ""
         },
@@ -350,6 +364,7 @@
         "levelKrav": {
             "behaendighed": 12
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -364,7 +379,8 @@
             "beskrivelse": "Træd 1 spænd frem og angrib i én glidende bevægelse. Hvis du rammer, gør du basisskade og får +1d6 på dit næste forsvar mod denne fjende, hvis de dig angriber inden din næste tur.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -376,6 +392,7 @@
         "levelKrav": {
             "behaendighed": 12
         },
+        "haandkrav": 2,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -390,7 +407,8 @@
             "beskrivelse": "Kræver to hænder. Træk buen helt ud og affyr en pil op til 30 spænd. Gør basisskade.",
             "skadeFaktor": 1,
             "hu": 1,
-            "sejd": 2
+            "sejd": 2,
+            "haandkrav": 2
         },
         "noter": ""
         },
@@ -402,6 +420,7 @@
         "levelKrav": {
             "behaendighed": 12
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -416,7 +435,8 @@
             "beskrivelse": "Kast spyddet op til 15 spænd efter et mål. Gør basisskade.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -428,6 +448,7 @@
         "levelKrav": {
             "styrke": 12
         },
+        "haandkrav": 2,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -442,7 +463,8 @@
             "beskrivelse": "Kræver to hænder. Et brutalt angreb, der rykker målet. Hvis du rammer, gør du dobblet basisskade og skubber målet 1 spænd væk fra dig. Hvis målet rammer en væg eller anden forhindring, falder det omkuld.",
             "skadeFaktor": 2,
             "hu": 3,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 2
         },
         "noter": ""
         },
@@ -454,6 +476,7 @@
         "levelKrav": {
             "visdom": 14
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": "profan",
         "tillaegsevne": null,
@@ -467,7 +490,8 @@
             "navn": "Slag",
             "beskrivelse": "Slå et mål indenfor 1 spænd. Gør halv basisskade.",
             "skadeFaktor": 0.5,
-            "hu": 2
+            "hu": 2,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -479,6 +503,7 @@
         "levelKrav": {
             "behaendighed": 10
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -493,7 +518,8 @@
             "beskrivelse": "Spid målet med spidsen af sværdet. Hvis du rammer, tager målet basisskade og bliver ængsteligt.",
             "skadeFaktor": 1,
             "hu": 2,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 1
         },
         "noter": ""
         },
@@ -506,6 +532,7 @@
             "styrke": 15,
             "behaendighed": 12
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": "behaendighed",
@@ -513,14 +540,16 @@
         "tillaegsNaevner": 5,
         "angreb": {
             "skadeFaktor": 1,
-            "hu": 2
+            "hu": 2,
+            "haandkrav": 1
         },
         "teknik": {
             "navn": "Rundhug",
             "beskrivelse": "Kræver to hænder. Udstræk spyddet og drej hele vejen rundt om dig selv. Rul én gang for at angribe alle indenfor 1 spænd omkring dig. Gør basisskade til alle, der rammes.",
             "skadeFaktor": 1,
             "hu": 3,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 2
         },
         "noter": ""
         },
@@ -532,6 +561,7 @@
         "levelKrav": {
             "styrke": 15
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -546,7 +576,8 @@
             "beskrivelse": "Kræver to hænder. Angrib et mål, ved at hoppe 1 spænd fremad og lande med et voldsomt stød. Gør dobbelt basisskade.",
             "skadeFaktor": 2,
             "hu": 3,
-            "sejd": 1
+            "sejd": 1,
+            "haandkrav": 2
         },
         "noter": ""
         },
@@ -558,6 +589,7 @@
         "levelKrav": {
             "styrke": 14
         },
+        "haandkrav": 1,
         "opgradering": 0,
         "leder": null,
         "tillaegsevne": null,
@@ -572,6 +604,7 @@
             "skadeFaktor": null,
             "hu": 1,
             "sejd": 1,
+            "haandkrav": 1,
             "beskrivelse": "I stedet for at blokere et fysisk nærangreb, kan du forsøge at parere. Rul Styrke for at forsvare dig. Hvis det lykkes, slår du modstanderens våben til side og kan forsøge at lave et modangreb, der ikke bruger Sejd."
         }
         }
