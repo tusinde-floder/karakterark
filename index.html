@@ -656,6 +656,8 @@
                 <div class="faerdighed-beholder-vindue faerdighed-beholder-vindue--besvaergelse" id="kendt-udstyr-vedhaeng"></div>
                 <div class="vindue__beam">Krop</div>
                 <div class="faerdighed-beholder-vindue faerdighed-beholder-vindue--besvaergelse" id="kendt-udstyr-krop"></div>
+                <div class="vindue__beam">Andet</div>
+                <div class="faerdighed-beholder-vindue faerdighed-beholder-vindue--besvaergelse" id="kendt-udstyr-andet"></div>
             </div>
             <div class="vindue__fod">
                 <div class="vindue__knapgruppe">
@@ -849,7 +851,8 @@
     <div class="vindue__baggrund" id="ny-karakter-vindue">
         <div class="vindue__blok">
             <div class="vindue__titel">Ny karakter</div>
-            <div class="vindue__tekst">Vælg klasse.</div>
+            <div class="vindue__tekst">Nulstil din nuværende karakter og lav en ny.<br>
+                Vælg en startklasse.</div>
             <div class="vindue__knapgruppe vindue__knapgruppe--lodret">
                 <div class="vindue__knap" id="asket-knap">Asket</div>
                 <div class="vindue__knap" id="bytyv-knap">Bytyv</div>
@@ -864,10 +867,26 @@
         </div>
     </div>
 
+    <div class="vindue__baggrund" id="bekraeft-klasse-vindue">
+        <div class="vindue__blok">
+            <div class="vindue__titel">Bekræft valg</div>
+            <div class="vindue__indhold">
+                <div class="vindue__tekst" id="bekraeft-klasse-besked" style="width: 300px;"></div>
+            </div>
+            <div> </div>
+            <div class="vindue__knapgruppe">
+                <div class="vindue__knap vindue__knap--annuller" id="bekraeft-klasse-nej">Annuller</div>
+                <div class="vindue__knap" id="bekraeft-klasse-ja">Bekræft</div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="vindue__baggrund" id="levelfordeling-vindue">
         <div class="vindue__blok">
             <div class="vindue__titel">Fordel evner</div>
+            <div class="vindue__tekst">Fordel de forskellige level-værdier ud på de resterende evner.</div>
             <input class="levelfordeling__input" type="text" id="levelfordeling-navn" placeholder="Karakterens navn">
             <div class="levelfordeling__info" id="levelfordeling-klasse"></div>
             <div class="levelfordeling__pulje" id="levelfordeling-pulje"></div>
@@ -877,7 +896,6 @@
                 </div>
             </div>
             <div class="vindue__knapgruppe">
-                <div class="vindue__knap vindue__knap--annuller" id="annuller-levelfordeling">Annuller</div>
                 <div class="vindue__knap" id="bekraeft-levelfordeling">Bekræft</div>
             </div>
         </div>

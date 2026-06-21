@@ -759,6 +759,8 @@ async function indlaesSpilData() {
 
 
 // Gem og indlæs
+const klasseVisningsnavn = { asket: 'Asket', bytyv: 'Bytyv', forkynder: 'Forkynder', hedonist: 'Hedonist', lovloes: 'Lovløs', laerd: 'Lærd', militarist: 'Militarist' };
+
 const karakterGrundlag = {
     navn: "",
     klasse: "",
@@ -857,7 +859,6 @@ function nulstilData() {
 }
 
 function hentStandardKlasse(klasse) {
-    const karakterVisningsnavn = { asket: 'Asket', bytyv: 'Bytyv', forkynder: 'Forkynder', hedonist: 'Hedonist', lovloes: 'Lovløs', laerd: 'Lærd', militarist: 'Militarist' };
     const diff = standardKlasser.find(k => k.id === klasse);
     if (!diff) return;
 

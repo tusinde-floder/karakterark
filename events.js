@@ -52,8 +52,30 @@ klik('annuller-karakter', () => {
 );
 
 
+let klasseBekraeftCallback = null;
+
 ['asket', 'bytyv', 'forkynder', 'hedonist', 'lovloes', 'laerd', 'militarist'].forEach(klasse => {
-    klik(`${klasse}-knap`, () => hentStandardKlasse(klasse));
+    klik(`${klasse}-knap`, () => {
+        document.getElementById('bekraeft-klasse-besked').textContent = 
+            `Vil du nulstille din nuværende karakter og lave en ny ${klasseVisningsnavn[klasse]}?`;
+        klasseBekraeftCallback = () => {
+            hentStandardKlasse(klasse);
+            lukVindue('bekraeft-klasse');
+        };
+        aabenVindue('bekraeft-klasse');
+    });
+});
+
+klik('bekraeft-klasse-ja', () => {
+    if (klasseBekraeftCallback) {
+        klasseBekraeftCallback();
+        klasseBekraeftCallback = null;
+    }
+});
+
+klik('bekraeft-klasse-nej', () => {
+    lukVindue('bekraeft-klasse');
+    klasseBekraeftCallback = null;
 });
 
 klik('bekraeft-levelfordeling', bekræftLevelfordeling);

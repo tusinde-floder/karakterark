@@ -860,7 +860,6 @@ function vaelgVaaben(vaaben) {
         const kvalificeret = tjekLevelKrav(vaaben);
         const brugteHaender = tjekHaender();
 
-        console.log(kvalificeret, brugteHaender);
         if (brugteHaender + vaaben.haandkrav > karakter.haender) {
             visBesked(`Du har ikke nok ledige hænder til ${vaaben.navn}.`);
             return;
@@ -926,7 +925,7 @@ function opdaterUdstyrKortBeredskab() {
 }
 
 function opdaterUdstyrKortValg() {
-    const raekkefoelge = ['hoved', 'vedhaeng', 'krop'].forEach(plads => {
+    const raekkefoelge = ['hoved', 'vedhaeng', 'krop', 'andet'].forEach(plads => {
         document.getElementById('kendt-udstyr-' + plads).innerHTML = '';
         altUdstyr
             .filter(u => karakter.udstyr.includes(u.id))
@@ -1075,11 +1074,10 @@ function tilfoejRustningsStrafTooltip(kort, udstyr) {
         `${rustning.navn} er for tung til din Styrke og giver dig
         <br>-1d6 til Behændighedsrul`
         + (strafniveau > 1 ? ',<br>-1 spænd/Hu i bevægelse' : '')
-        + (strafniveau > 2 ? ',<br>-1 Hu regenerering' : '')
-        + (strafniveau > 3 ? ',<br>-1 maksimalt Hu' : '')
+        + (strafniveau > 2 ? ',<br>-1 maksimalt Hu' : '')
+        + (strafniveau > 3 ? ',<br>-1 Hu regenerering' : '')
         + '.'
     );
-
 }
 
 function tilfoejUdstyrValgInteraktion(kort, udstyr, id) {
@@ -1118,14 +1116,24 @@ function tilfoejUdstyrValgInteraktion(kort, udstyr, id) {
                 return valgUdstyr.plads === udstyr.plads;
             });
 
-            if (konflikt) {
-                const beskeder = {
-                    'hoved': 'Du har allerede udstyr på hovedet.',
-                    'vedhaeng': 'Du har allerede et vedhæng.',
-                    'krop': 'Du har allerede udstyr på kroppen.'
-                };
-                visBesked(beskeder[udstyr.plads]);
-                return;
+            if (udstyr.plads !== 'andet') {
+                if (konflikt) {
+                    const beskeder = {
+                        'hoved': 'Du har allerede udstyr på hovedet.',
+                        'vedhaeng': 'Du har allerede et vedhæng.',
+                        'krop': 'Du har allerede udstyr på kroppen.'
+                    };
+                    visBesked(beskeder[udstyr.plads]);
+                    return;
+                }
+            }
+
+            if (udstyr.plads !== 'krop' && udstyr.levelKrav) {
+                const kvalificeret = tjekLevelKrav(udstyr);
+                if (!kvalificeret) {
+                    visBesked(`Du opfylder ikke levelkravene for ${udstyr.navn}.`);
+                    return;
+                }
             }
 
             karakter.valgtUdstyr.push(udstyr.id);

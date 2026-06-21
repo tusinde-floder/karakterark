@@ -1812,6 +1812,41 @@
             "forskydning": {
                 "mystik": 1
             }
+        },
+
+
+
+        {
+            "id": "u_fyr_braendefyr",
+            "navn": "Brændefyr",
+            "beskrivelse": "En transportabel brændefyret ovn. Kan opvarme et rum på 4 x 4 spænd. Bruger 1 styk træbrænde per time.",
+
+            "type": "Fyr",
+            "plads": "andet"
+        },
+        {
+            "id": "u_fyr_mineralfyr",
+            "navn": "Mineralfyr",
+            "beskrivelse": "En kompakt og transportabel mineralfyret ovn. Kan opvarme et rum på 4 x 4 spænd. Bruger 1 mineral per time.",
+
+            "type": "Fyr",
+            "plads": "andet",
+
+            "levelKrav": {
+                "visdom": 25
+            }
+        },
+        {
+            "id": "u_fyr_braendselfrit-fyr",
+            "navn": "Brændselsfrit fyr",
+            "beskrivelse": "En kompakt og transportabel ovn, der fyres uden brændsel. Kan opvarme et rum på 4 x 4 spænd. Kræver konstant fokus fra én person, der er i berøring med fyret, for at fungere.",
+
+            "type": "Fyr",
+            "plads": "andet",
+
+            "levelKrav": {
+                "mystik": 25
+            }
         }
     ]
 }
